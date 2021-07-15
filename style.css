@@ -1,0 +1,590 @@
+@font-face {
+  font-family: APL;
+  src: local("APL385 Unicode"), url("assets/apl385.ttf");
+}
+@font-face {
+  font-family: sans;
+  font-weight: normal;
+  src: local("Nunito SemiBold"), url("assets/Nunito-SemiBold.ttf");
+}
+@font-face {
+  font-family: sans;
+  font-weight: bold;
+  src: local("Nunito"), url("assets/Nunito-Bold.ttf");
+}
+@font-face {
+  font-family: sans;
+  font-style: italic;
+  src: local("Nunito SemiBold"), url("assets/Nunito-SemiBoldItalic.ttf");
+}
+@font-face {
+  font-family: sans;
+  font-weight: bold;
+  font-style: italic;
+  src: local("Nunito"), url("assets/Nunito-BoldItalic.ttf");
+}
+
+/* Hide oneLineInput on mobile */
+@media only screen and (max-width: 600px) {
+	#oneLineInput {visibility: hidden;}
+	#oneLineSubmit {visibility: hidden;}
+}
+
+html {
+  --main-col:   165, 76,206;
+  --main-light: 186, 99,208;
+  --main-dark:  127,  0,185;
+  --sec-dark:   127,  0,127;
+  --sec-light:  255,  0,255;
+  --g7:         119,119,119;
+  --g8:         136,136,136;
+  --g9:         153,153,153;
+  --gf:         254,254,254;
+  --weak:       119,119,255;
+  --mid:        204,119,255;
+}
+
+body {
+  font-family: sans, sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+kbd.l, pre, code, .apl, #session, #primerGlyphs input, .ngn_lb b {
+  font-family: APL, monospace;
+}
+kbd.l, pre, code, .apl, #session, #primerGlyphs input {
+  white-space: pre;
+}
+
+pre.apl, code.apl, code.language-APL, #primer code, #primerGlyphs input {
+  cursor: pointer;
+  color: rgb(var(--sec-dark));
+}
+
+.b pre.apl, .b code.apl, .b code.language-APL, .b #primer code, .b #primerGlyphs input {
+  color: rgb(var(--sec-light));
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  /* background: rgb(var(--main-col)); */
+}
+
+.b body {
+	background: #000;
+}
+
+.inURL {
+  width: 100%;
+}
+
+.b #leftPane, .b #rightPane, .b .inURL {
+  color: #fff;
+  background: #000;
+}
+
+#replBar {
+	padding-top: 1px;
+	background: rgb(var(--main-col));
+	width: 100%;
+	color: #fff;
+}
+
+#oneLineInput {
+	font-family: apl;
+	font-size: 1em;
+}
+
+h1 {
+  font-size: 1.73em;
+}
+
+h2 {
+  font-size: 1.44em;
+}
+
+h3 {
+  font-size: 1.2em;
+}
+
+h4 {
+  font-size: 1em;
+}
+
+h5 {
+  font-size: 0.83em;
+}
+
+h6 {
+  font-size: 0.69em;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-weight: bold;
+  margin-block-start: 1.5ex;
+  margin-block-end: 0.5ex;  
+}
+
+kbd{
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgba(var(--g8),0.5);
+  margin: 1px;
+  white-space: nowrap;
+  font-family: inherit;
+}
+
+kbd.l{
+  padding: 2px 6px;
+}
+
+hr {
+  border: 0;
+  height: 0.1ex;
+  background: rgb(var(--main-col));
+  opacity: 0.5;
+  margin: 3px;
+}
+
+table {
+  border-collapse: collapse;
+}
+td{
+  padding: 0;
+  vertical-align: top;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  top: -1000em;
+}
+
+.split,
+.gutter.gutter-horizontal {
+  float: left;
+}
+
+.gutter.gutter-horizontal {
+  cursor: ew-resize;
+  background: rgb(var(--main-col));
+  height: 100vh;
+  color: #fff;
+}
+
+.content {
+  padding: 1ex 1em;
+  overflow: hidden auto;
+  display: none;
+  height: calc(100vh - 3em);
+}
+
+.content.active {
+  display: block;
+}
+
+.grid.active {
+  display: grid;
+}
+
+.tablink {
+  border: none;
+  background: unset;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  text-transform: uppercase;
+  color: #fff;
+  width: 20%;
+  font-size: 100%;
+  overflow: hidden;
+  font-family: unset;
+  text-overflow: ellipsis;
+  padding: 6px 2px;
+  margin: 1px;
+  margin-bottom: 0;
+}
+
+.tablink.active {
+  cursor: unset;
+  border-color: #fff;
+}
+
+#leftPane, #rightPane {
+	background: #fff;
+}
+
+#rightPane {
+	display: flex;
+	flex-direction: column;
+}
+
+#leftPane {
+  overflow-y: auto;
+  z-index: -2;  
+}
+
+#tabs {
+  height: 2em;
+  overflow: hidden;
+  display: flex;
+  background: rgb(var(--main-col));
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+#lbInfo {
+	padding-left: 1.5em;
+	line-height: 1.5em;
+}
+
+.hiTable, .creditsTable {
+  margin: 1ex 0;
+  line-height: 1.5;
+}
+
+.hiTable {
+  width: 100%
+}
+
+.hiTable td:first-child {
+  white-space: pre;
+  padding-right: 1em;
+}
+
+.inURL {
+  width: calc(100% - 4em);
+  /*height: calc(2.25em - 2px);*/
+  padding: 0 0.5em;
+  vertical-align: middle;
+  border: 1px solid rgb(var(--g7));
+}
+
+#lessonList a{
+  display: table;
+  margin-bottom: 1ex;
+  text-indent: -3ex;
+  padding-left: 3ex;
+}
+
+.run {
+  height: 2.25em;
+  background: rgb(var(--main-col));
+  border: 1px solid rgb(var(--main-col));
+  color: #fff;
+  width: 2.75em;
+  padding: 5px 0;
+  text-transform: uppercase;
+  fill: #fff;
+  vertical-align: middle;
+  font-size: 1em;
+}
+
+#lessonList a {
+  color: unset;
+  text-decoration: blue underline;
+  cursor: pointer;
+}
+.b #lessonList a {
+  text-decoration-color: #77f;
+}
+
+#learn.grid.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.urlInputGroup {
+  display: flex;
+  margin-bottom: 0;
+}
+
+.errorDiv{
+  text-align: center;
+  margin-bottom: -1em;
+}
+
+.errorSpan {
+  visibility: hidden;
+  opacity: 0;
+  transition: all 150ms;
+  transform-origin: center;
+  font-size: 1.2em;
+  padding: 0 1ex;
+  color: #fff;
+  background: rgb(var(--main-col));
+  border-radius: 0 0 12px 12px;
+}
+
+.errorSpan svg {
+	font-size: 85%
+}
+
+@keyframes errorScale {
+    0% {opacity: 1}
+   80% {opacity: 1}
+  100% {opacity: 0}
+}
+
+.errorSpan.animate {
+  animation: errorScale 3s;
+}
+
+#learnButtons {
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgb(var(--main-col));
+  width: calc(100% + 2em);
+  text-align: center;
+  margin-left: -1em;
+  fill: #fff;
+  color: #fff;
+  position: relative;
+  flex: 2;
+  max-height: 100px;
+}
+
+#learnButtons button {
+  height: 2.25em;
+  width: 3em;
+  font-size: larger;
+  padding-bottom: 0.5em;
+  background: unset;
+  border: none;
+  color: #fff;
+  margin-bottom: -10px;
+  padding-top: 6px
+}
+
+.flip{
+  transform: scaleX(-1);
+}
+
+#lessonFN {
+  margin-top: 8px;
+  margin-bottom: 4px
+}
+
+#mdrender {
+  display: none;
+  overflow: hidden scroll;
+  padding: 1ex 1em 0 1em;
+  position: relative;
+  flex: 1;
+}
+
+#mdrender>* {
+  padding: 0;
+}
+
+#mdrender>*:last-child {
+  padding-bottom: 3ex;
+}
+
+#mdrender img{
+  float: unset;
+}
+
+#linkIcon{
+  color: rgb(var(--main-col));
+  position: absolute;
+  right: 1.2em;	
+  cursor: pointer;
+  filter: drop-shadow( 1px  1px 1px #fff)
+          drop-shadow(-1px -1px 1px #fff)
+          drop-shadow( 1px -1px 1px #fff)
+          drop-shadow(-1px  1px 1px #fff);
+}
+.b #linkIcon {
+  filter: drop-shadow( 1px  1px 1px #000)
+          drop-shadow(-1px -1px 1px #000)
+          drop-shadow( 1px -1px 1px #000)
+          drop-shadow(-1px  1px 1px #000);
+  color: #f0f;
+}
+
+#session {
+  /* width: calc(100% - 1em); */
+	flex-grow: 2;
+  border: none;
+  resize: none;
+  padding: 0.2em 0.2em 0.2em 0.8em;
+  color: inherit;
+  background: inherit;
+	overflow-y: scroll;
+}
+
+#aplInputGroup {
+	margin: 10px 0 10px 0;
+}
+
+.b a {
+  color: rgb(var(--weak));
+}
+.b a:visited {
+  color: rgb(var(--mid));
+}
+
+#intro code.apl, #learn code.apl{
+  padding-left: 3ex;
+}
+
+#primerGlyphs input {
+  background: unset;
+  border: none;
+  font-size: 1.2em;
+  padding: 0 0.1em;
+}
+
+.creditsTable td:nth-child(2) {
+  font-weight: bold;
+  padding-left: 1em;
+}
+
+#full {
+  position: relative;
+  top: calc(50% - 70px);
+  padding: 16px 3px 12.5px 1px;
+  background: rgb(var(--main-col));
+  border-radius: 0 16px 16px 0;
+  cursor: pointer;
+  display: inline-block;
+  left: 10px;
+  color: #fff;
+  fill: #fff;
+}
+
+#triangle.flip {
+  transform: scaleX(-1);
+}
+/* temporary effects */
+
+.gutter:hover,
+#full:hover,
+.tablink:hover, .tablink:focus,
+#learnButtons button:hover,
+.run:hover
+{
+  background: rgb(var(--main-dark));
+}
+
+.inURL:hover, .inURL:focus {
+  border-color: rgb(var(--main-dark));  
+}
+
+/* language bar */
+
+.ngn_lb{
+  background: rgb(var(--main-col));
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid rgb(var(--main-col));
+  color: #fff;
+  padding: 2px;
+  word-wrap: break-word;
+  user-select: none;
+  z-index: -1;
+}
+
+.ngn_lb b {
+  cursor: pointer;
+  padding: 0 2px;
+  font-weight: normal;
+  text-decoration: none;
+  font-size: 1.2em;
+}
+
+.ngn_lb b:hover,
+.ngn_bq .ngn_lb {
+  background: rgb(var(--main-dark));
+  color: #fff;
+  box-shadow: unset;
+}
+
+.ngn_x,
+.help,
+.ngn_o {
+  float: right;
+  color: rgb(var(--g9));
+  cursor: pointer;
+}
+
+.ngn_x {
+  margin-top: -3px;
+}
+
+.ngn_x:hover {
+  color: #f00;
+}
+
+.ngn_lb .help {
+  margin: -4px 1px;
+}
+
+.minibar {
+  position: fixed;
+  right: -2px;
+  top: -2px;
+  background: #eee;
+  border: 2px solid #ddd;
+  padding: 0 3px;
+  cursor: pointer;
+  color: rgb(var(--g9));
+  user-select: none;
+}
+
+.minibar {
+  margin-top: -1px;
+}
+
+.ngn_o:hover {
+  color: #0f0;
+}
+
+ /* The Modal (confirmLoadWS) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(127,127,127); /* Fallback color */
+  background-color: rgba(127,127,127,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background: #fff;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 10px solid rgb(var(--main-dark));
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.b .modal-content {
+  background: #000;
+  color: #fff
+}
+
+/* The Close Button */
+.close {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  margin-top: -12px;
+}
+
+.close:hover,
+.close:focus {
+  color: rgb(var(--main-col));
+  text-decoration: none;
+  cursor: pointer;
+} 

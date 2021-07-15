@@ -1,0 +1,12 @@
+version: '2'
+services:
+  web:
+    image: dyalog/jarvis
+    stdin_open: true
+    volumes:
+    - /DockerVolumes/ftp/tryaplweb/{{BRANCH}}:/app
+    tty: true
+    labels:
+      io.rancher.container.pull_image: always
+    environment:
+      TAE_SALT: ${TAE_SALT}

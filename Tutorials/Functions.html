@@ -1,0 +1,148 @@
+<meta data-name="Functions" data-category="APL Basics" data-description="How APL applies functions"/><div class="lessonstep"><div>A function can applied to data in two ways: <strong>dyadically</strong> or <strong>monadically</strong>. That is, a function can be applied to either one or two arguments. Most primitve functions have both a dyadic and a monadic definition. For example <code class="APL">-</code>, when applied dyadically is subtract, and when applied monadically is negate.</div></div>
+
+<div class="lessonexec">10-7  ⍝ dyadic</div>
+
+<div class="lessonexec">-5    ⍝ monadic</div>
+
+<div class="lessonstep"><div>We distinguish between two types of functions when it comes to applying to data. <strong>Scalar</strong> functions and <strong>mixed</strong> functions.</div></div>
+
+<div class="lessonstep"><div class="h_tag"><div href="#Scalar-Functions" id="Scalar-Functions" class="autoheader_anchor"><h4>Scalar Functions</h4></div></div><div>A scalar function will penetrate the arrays that it is applied to, all the way down to the simple scalars.</div><div>Examples of scalar functions are the arithmetic functions; <code class="APL">+</code> <code class="APL">-</code> <code class="APL">×</code> <code class="APL">÷</code> etc. A worthy note is that APL uses traditional mathematics notation for multiplication and division: <code class="APL">×</code> and <code class="APL">÷</code>. <code class="APL">*</code> is used for exponentiation, which is also scalar.</div></div>
+
+<div class="lessonexec">- 2 1 4 ¯11 6</div>
+
+<div class="lessonexec">-(1 2) 3 ((¯2 3 ¯6) (33 11 ¯0.5))</div>
+
+<div class="lessonstep"><div>See that the structure of the array remains the same, only the content is changed. The same is of course true for higher rank arrays. If you're</div><div>unfamiliar with the concept of rank, you can check out the notebook on arrays.</div></div>
+
+<div class="lessonexec">- 3 2⍴4 2 (1 1)</div>
+
+<div class="lessonstep"><div>When a scalar function is applied dyadically, the scalars are paired up between the two arrarys and the function is applied between the pairs. If the shapes of the arguments do not match up, an error is reported.</div></div>
+
+<div class="lessonexec">4 2 1×3 7 6</div>
+
+<div class="lessonexec">2 3+1 7 7</div>
+
+<div class="lessonexec">(2 4) (6 5 11) 7 + (3 2) (¯3 4 0.1) ¯7</div>
+
+<div class="lessonstep"><div>Here the result was <code class="APL">(2 4+3 2)(6 5 11+¯3 4 0.1)(7+¯7)</code></div></div>
+
+<div class="lessonexec">(2 2⍴1 2 3 4)+(2 2⍴5 2 5 1)</div>
+
+<div class="lessonstep"><div>The shapes of the arguments need not match up exactly. If one of the arguments is a scalar, you get what is called scalar extension. The scalar is distributed across all the scalars of the other argument.</div></div>
+
+<div class="lessonexec">2×3 4 2</div>
+
+<div class="lessonexec">(1 3) (4 5 6) 7*2</div>
+
+<div class="lessonexec">(3 3⍴1 2 3 4 5 6 7 8 9)÷9</div>
+
+<div class="lessonstep"><div>Additionally scalars inside the arrays can be extended after the items have been paired up.</div></div>
+
+<div class="lessonexec">1 2 3+(3 2 1) (¯1 ¯2 ¯3) ((44 71 11) 1 (32 0.5))</div>
+
+<div class="lessonstep"><div>All of the arithmetic functions also have a monadic definition.</div><div><code class="APL">-</code> is negate</div><div><code class="APL">÷</code> is reciprical</div><div><code class="APL">+</code> is complex-conjugate (Acts as identity for real numbers)</div><div><code class="APL">×</code> returns the unit complex number in the direction of its argument (Acts as signum on real numbers)</div><div><code class="APL">*</code> raises <em>e</em> to the power of its argument</div><div>Have a go at testing them all out by modifying the following:</div></div>
+
+<div class="lessonexec">+ 1j5 (0j6 7) 0.4 4j¯1e¯9</div>
+
+<div class="lessonstep"><div class="h_tag"><div href="#Mixed-Functions" id="Mixed-Functions" class="autoheader_anchor"><h4>Mixed Functions</h4></div></div><div>Mixed functions apply to larger structures of the argument, for example the rows of an matrix, or just take the entire argument. They can treat each argument differently in this respect.</div><div>Monadic <code class="APL">⍴</code> (shape) is a mixed function. It returns the shape of its argument - the lengths of its dimensions. Obviously this wouldn't be very useful as a scalar function.</div><div><code class="APL">⍴</code> takes its entire argument into consideration.</div></div>
+
+<div class="lessonexec">⍴ 1 2 3</div>
+
+<div class="lessonexec">⍴ (1 2 3)(2 2 2) 4 2</div>
+
+<div class="lessonexec">⍴ (3 3⍴0 1 1)</div>
+
+<div class="lessonstep"><div>There are many functions in APL and they won't all be contained in this notebook. <code class="APL">⍴</code> has been covered in more depth in the arrays notebook, along with monadic <code class="APL">≡</code>.</div></div>
+
+<div class="lessonstep"><div>To define your own functions, you have three options - dfns, tradfns and tacit functions.</div><div>A user defined function behaves the same way as a primitive function. It takes a maximum of two arguments (left and right), and is called either prefix (monadically) or infix (dyadically).</div></div>
+
+<div class="lessonstep"><div class="h_tag"><div href="#Dfns" id="Dfns" class="autoheader_anchor"><h2>Dfns</h2></div></div><div>A dfn (dynamic-function) is an APL expression enclosed in braces (<code class="APL">{}</code>) where the left and right arguments are refered to by <code class="APL">⍺</code> and <code class="APL">⍵</code> (the leftmost and rightmost characters in the greek alphabet) respectively. For a monadic function, only <code class="APL">⍵</code> is used.</div></div>
+
+<div class="lessonexec">times←{⍺×⍵}  ⍝ dfns are assigned just like other values</div>
+
+<div class="lessonexec autoexec"></div>
+
+<div class="lessonexec autoexec">4 times 5</div>
+
+<div class="lessonstep"><div>Dfns are anonymous functions (they don't require a name). This means that they can be used inline like a primitive function.</div></div>
+
+<div class="lessonexec">4 {⍺×⍵} 5</div>
+
+<div class="lessonexec">3 {(⍵*2)+(⍺*2)} 4</div>
+
+<div class="lessonexec">3 {(⍺,1)⍴⍵} 'APL is fun'</div>
+
+<div class="lessonstep"><div>Dfns can be nested as much as you like. <code class="APL">⍺</code> and <code class="APL">⍵</code> will always reference the arguments of the dfn defined by the immediately enclosing braces.</div></div>
+
+<div class="lessonexec">3 {{⍵*0.5}(⍵*2)+(⍺*2)} 4</div>
+
+<div class="lessonstep"><div>Inside a dfn, you can perform an <code class="APL">if a then b else c</code> check. It takes the form <code class="APL">{a:b⋄c}</code>. <code class="APL">a</code> must evaluate to a <strong>boolean singleton</strong>, which just means that it is a <code class="APL">1</code> or <code class="APL">0</code> whose shape consists of only 1s.</div></div>
+
+<div class="lessonexec">{⍵:'true'⋄'false'} 1</div>
+
+<div class="lessonstep"><div>There are many functions in APL that return booleans. Examples are comparisons: <code class="APL">&lt;</code> <code class="APL">≤</code> <code class="APL">=</code> <code class="APL">≥</code> <code class="APL">&gt;</code></div><div>The comparisons are all scalar functions.</div></div>
+
+<div class="lessonexec">6>4</div>
+
+<div class="lessonexec">1 2 3 4 5=3 2 1 4 5</div>
+
+<div class="lessonexec">10 {⍺&lt;⍵:⍺⋄⍵} 12  ⍝ minumum</div>
+
+<div class="lessonstep"><div>To perform recursion, you can either use the name of the function or the symbol <code class="APL">∇</code> which refers to the function it's in. If it's not named, you have to use <code class="APL">∇</code>, which is generally recommended so that you may rename the function without having to change its definition.</div></div>
+
+<div class="lessonexec">fac←{⍵>1:⍵×fac ⍵-1⋄1}</div>
+
+<div class="lessonexec autoexec"></div>
+
+<div class="lessonexec autoexec">fac 5</div>
+
+<div class="lessonexec">{⍵>1:⍵×∇⍵-1⋄1} 5</div>
+
+<div class="lessonstep"><div class="h_tag"><div href="#Tacit-functions" id="Tacit-functions" class="autoheader_anchor"><h2>Tacit functions</h2></div></div><div>A tacit functions is an APL statement that does not have data on the right.</div><div>The simplest tacit expression is a single function:</div></div>
+
+<div class="lessonexec">f←+</div>
+
+<div class="lessonexec autoexec"></div>
+
+<div class="lessonexec autoexec">1 f 2</div>
+
+<div class="lessonstep"><div>Longer tacit functions are often refered to as trains, where each car is either a function or an array. We'll start by going over monadic trains.</div><div>A two-train <code class="APL">f g</code> is called an atop. <code class="APL">(f g) X</code> is equivalent to <code class="APL">f (g X)</code>. f is evaluated <em>atop</em> the result of g.</div></div>
+
+<div class="lessonstep"><div>Since a tacit expression does not have data on the right, to use an unnamed train it must be placed inside parentheses.</div></div>
+
+<div class="lessonexec">(×-)1 0 ¯5</div>
+
+<div class="lessonexec">(÷*) 0 3 11</div>
+
+<div class="lessonstep"><div>Now, there are two types of three-trains (forks), which are closely related. The <code class="APL">f g h</code> fork and the <code class="APL">A g h</code> fork. Here <code class="APL">f</code> is a function while <code class="APL">A</code> is an array.</div><div><code class="APL">(f g h) X</code> is equivilent to <code class="APL">(f X) g (h X)</code> and <code class="APL">(A g h) X</code> is <code class="APL">A g (h X)</code></div></div>
+
+<div class="lessonexec">(⍴+≡) 4 6⍴1 (2 3) 3 3  ⍝ The shape plus the depth</div>
+
+<div class="lessonexec">(1-×)1 0 10 ¯4</div>
+
+<div class="lessonstep"><div>Dyadic trains have almost identical definitions to monadic ones.</div><div><code class="APL">X (f g) Y ←→ f (X g Y)</code></div></div>
+
+<div class="lessonexec">3 (×-) 6  ⍝ The sign of the difference</div>
+
+<div class="lessonstep"><div><code class="APL">X (f g h) Y ←→ (X f Y) g (X h Y)</code></div></div>
+
+<div class="lessonexec">4 (×-+) 3   ⍝ The product minus the sum</div>
+
+<div class="lessonstep"><div><code class="APL">X (A g h) Y ←→ A g (X h Y)</code></div></div>
+
+<div class="lessonexec">3 2 0 (2 4 1×+) 11 7 20</div>
+
+<div class="lessonstep"><div>Iside trains, it is useful to have the functions <code class="APL">⊢</code> and <code class="APL">⊣</code>. <code class="APL">⊢</code> returns the right argument and <code class="APL">⊣</code> returns the left. When used monadically they both return the right.</div></div>
+
+<div class="lessonexec">(⊢×1-⊢) 20</div>
+
+<div class="lessonexec">3 (⊢⍴⊣) 4 4  ⍝ 4 4⍴3</div>
+
+<div class="lessonstep"><div>For any trains longer than three, the rules are still simple. If there are more than three functions, the last three become a three train and are treated as a single function. Then it's either an atop, a fork, or you have to repeat the previous step.</div><div>For example <code class="APL">(p q r s) X</code> becomes <code class="APL">(p (q r s)) X</code> which becomes <code class="APL">p ((q r s) X)</code> which finally evaluates to <code class="APL">p ((q X) r (s X))</code></div><div>In the same way <code class="APL">X (p q r s t) Y</code> is equivilent to <code class="APL">(X p Y) q ((X r Y) s (X t Y))</code></div></div>
+
+<div class="lessonexec">2 5 (⊣⍴(1+×)) 4</div>
+
+<div class="lessonexec">2 5 (⊣⍴1+×) 4</div>
+
+<div class="lessonstep"><div>A particularly common use for trains is when you have a handful of conditions and you want to check whether the input satisfies all of them. This can be easily done using the scalar function <code class="APL">∧</code> (logical-and). The conditions can be written as <code class="APL">cond1 ∧ cond2 ∧ cond3 ∧ cond4...</code>. Using a train takes a lot of the strain off the reader because the pattern is obvious; all the conditions are being checked on the input and then are anded together. Compare this to <code class="APL">{(cond1 ⍵)∧(cond2 ⍵)∧(cond3 ⍵)...}</code>, where the input has to be explicitly referenced in each condition and the line is cluttered by parentheses.</div></div>
+

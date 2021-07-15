@@ -1,0 +1,479 @@
+<!DOCTYPE HTML>
+<html lang="en" id=html>
+	<head>
+		<meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>TryAPL</title>
+		<link rel="shortcut icon" href="favicon.ico">
+		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="lib/font-awesome.min.css">
+		<script src="lib/split.min.js"></script>
+		<script src="lib/tryapl.js"></script>
+		<script src="lib/jupyter.js"></script>
+		<script src="lib/polyfill.min.js?features=es6"></script>
+		<script>window.texme = { style: 'plain', renderOnLoad: false,  useMathJax: true, protectMath: true  }</script>
+		<script src="https://cdn.jsdelivr.net/npm/texme@1.0.0"></script>
+		
+	</head>
+	<body>
+		<i accesskey="w" onclick="html.className=this.accessKey;localStorage.setItem('darkMode','w');"></i>
+		<i accesskey="b" onclick="html.className=this.accessKey;localStorage.setItem('darkMode','b');"></i>
+		<i accesskey="l" onclick="permaLink()"></i>
+		<a accesskey="h" target="_blank" href="https://help.dyalog.com/latest/#Language/Introduction/Language%20Elements.htm"></a>
+		<div id="leftPane" class="split">
+			<div id="tabs">
+				<button class="tablink" accesskey="" title="Workspace Data" id="fileTab" onclick="showTab('file')"                    ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" height="18"><path fill="currentColor" d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z" class=""></path></svg><span>File</span></button>
+				<button class="tablink" accesskey="i" title="Introduction" id="introTab" onclick="showTab('intro')"                   ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="18"><path fill="currentColor" d="M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z" class=""></path></svg><span>Intro</span></button>
+				<button class="tablink" accesskey="" title="Learn with interactive lessons" id="learnTab" onclick="showTab('learn')"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="18"><path fill="currentColor" d="M352 96c0-53.02-42.98-96-96-96s-96 42.98-96 96 42.98 96 96 96 96-42.98 96-96zM233.59 241.1c-59.33-36.32-155.43-46.3-203.79-49.05C13.55 191.13 0 203.51 0 219.14v222.8c0 14.33 11.59 26.28 26.49 27.05 43.66 2.29 131.99 10.68 193.04 41.43 9.37 4.72 20.48-1.71 20.48-11.87V252.56c-.01-4.67-2.32-8.95-6.42-11.46zm248.61-49.05c-48.35 2.74-144.46 12.73-203.78 49.05-4.1 2.51-6.41 6.96-6.41 11.63v245.79c0 10.19 11.14 16.63 20.54 11.9 61.04-30.72 149.32-39.11 192.97-41.4 14.9-.78 26.49-12.73 26.49-27.06V219.14c-.01-15.63-13.56-28.01-29.81-27.09z" class=""></path></svg><span>Learn</span></button>
+				<button class="tablink" accesskey="" title="Language overview" id="primerTab" onclick="showTab('primer')"            ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="18"><path fill="currentColor" d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z" class=""></path></svg><span>Primer</span></button>
+				<button class="tablink" accesskey="" title="Links to useful resources" id="linksTab" onclick="showTab('links')"      ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="18"><path fill="currentColor" d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z" class=""></path></svg><span>Links</span></button>
+				<button class="tablink" accesskey="" title="About the techology used" id="helpTab" onclick="showTab('help')"         ><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="18"><path fill="currentColor" d="M504 256c0 136.997-111.043 248-248 248S8 392.997 8 256C8 119.083 119.043 8 256 8s248 111.083 248 248zM262.655 90c-54.497 0-89.255 22.957-116.549 63.758-3.536 5.286-2.353 12.415 2.715 16.258l34.699 26.31c5.205 3.947 12.621 3.008 16.665-2.122 17.864-22.658 30.113-35.797 57.303-35.797 20.429 0 45.698 13.148 45.698 32.958 0 14.976-12.363 22.667-32.534 33.976C247.128 238.528 216 254.941 216 296v4c0 6.627 5.373 12 12 12h56c6.627 0 12-5.373 12-12v-1.333c0-28.462 83.186-29.647 83.186-106.667 0-58.002-60.165-102-116.531-102zM256 338c-25.365 0-46 20.635-46 46 0 25.364 20.635 46 46 46s46-20.636 46-46c0-25.365-20.635-46-46-46z" class=""></path></svg><span>Help</span></button>
+			</div>
+			<div class="content" id="intro">
+				<h1>Got a minute? &mdash; Try APL!</h1>
+				APL is an array-oriented programming language that will change the way you think about problems and data. With a powerful, concise syntax, it lets you develop shorter programs that enable you to think more about the problem you're trying to solve than how to express it to a computer. <br><br>TryAPL runs on Dyalog, which you can <a target="_blank" href="https://dyalog.com/download-zone.htm">download for free</a>, or try it now by entering an expression (use the language bar above to type the special APL symbols), or clicking one of these expressions, followed by <kbd>Enter</kbd>, to see it in action:
+				<table class="hiTable">
+					<tr>
+						<td><code class="apl">2 + 2</code></td>
+						<td>No points for guessing this</td>
+					</tr>
+					<tr>
+						<td><code class="apl">4 2 3 + 8 5 7</code></td>
+						<td>Functions apply to arrays</td>
+					</tr>
+				</table>
+				<hr>
+				<table class="hiTable">
+					<tr>
+						<td><code class="apl">⍳10</code></td>
+						<td>Generate the first ten integers</td>
+					</tr>
+					<tr>
+						<td><code class="apl">+/⍳100000</code></td>
+						<td>Sum the first 100&thinsp;000 integers</td>
+					</tr>
+					<tr>
+						<td><code class="apl">×/⍳10</code></td>
+						<td>A long, slow way to write <code class="apl">!10</code></td>
+					</tr>
+				</table>
+				<hr>
+				<table class="hiTable">
+					<tr>
+						<td><code class="apl">Avg←{(+⌿⍵)÷≢⍵}</code></td>
+						<td>Average is the sum divided by the count</td>
+					</tr>
+					<tr>
+						<td><code class="apl">Avg 1 6 3 4</code></td>
+						<td>… and apply it</td>
+					</tr>
+				</table>
+				<hr>
+				<table class="hiTable">
+					<tr>
+						<td><code class="apl">throws←?10000⍴6</code></td>
+						<td>Store 10&thinsp;000 dice throws</td>
+					</tr>
+					<tr>
+						<td><code class="apl">+/1=throws</code></td>
+						<td>Of 10&thinsp;000 throws, how many 1s?</td>
+					</tr>
+					<tr>
+						<td><code class="apl">+/(⍳6)∘.=throws</code></td>
+						<td>Frequency of all 6 possibilities</td>
+					</tr>
+				</table>
+				<hr>
+				<table class="hiTable">
+					<tr>
+						<td><code class="apl">'Hello, World!'</code></td>
+						<td>Not just about maths!</td>
+					</tr>
+					<tr>
+						<td><code class="apl">{⍺,≢⍵}⌸'Mississippi'</code></td>
+						<td>See?</td>
+					</tr>
+				</table>
+				<h2>What can APL do for you?</h2>
+				Are you a Problem Solver (a domain or subject matter expert with problems to solve) or a Programmer (someone who translates those solutions into a computer-executable format)? Problem Solvers benefit from APL's ability to concisely express advanced concepts without getting bogged down with a lot of computerese syntax. Programmers benefit from APL's productivity and brevity. Shorter programs means quicker development time and less code to maintain and debug.
+				<br><br>
+				In either case, concepts that take several lines of code in other languages can often be reduced to a few characters in APL. You'll quickly find that APL's symbols are organized in a logical, mnemonic manner that makes it easy to express advanced concepts clearly and concisely, and makes it easy to learn too. Move to the <a href="#" onclick="learnTab.click()">Learn</a> tab and get started or visit the <a href="#" onclick="primerTab.click()">Primer</a> tab to explore on your own!!
+			<br/><br/></div>
+			<div class="content grid" id="learn" data-in_notebook="no">
+				<div id="loadnb">
+					<h1>Interactive lessons</h1>
+					We use the Jupyter Notebook format to provide interactive lessons. <a href="#" onclick="helpTab.click();help.scrollTo(0,limitations.offsetTop-help.offsetTop)">Limitations apply.</a> For full functionality, <a target="_blank" href="https://dyalog.com/download-zone.htm">download Dyalog APL</a> for free.
+					<p class="urlInputGroup">
+						<input type="text" placeholder="Jupyter Notebook URL" id="nbURL" class="inURL"/>
+						<button class="run" onclick="nbLoad('#nbURL')"><svg xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"/></svg></button>
+					</p>
+					<div id="nbErrorDiv" class="errorDiv">
+						<span id="nbError" class="errorSpan"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z" class=""></path></svg></i>&nbsp;Load failed!</span>
+					</div>
+					<div id="lessonList" onclick="nbFill(event.target)">		  
+						<h3>Basics</h3>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Using the TryAPL Tutorials.ipynb">Using the TryAPL Tutorials</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/APL Expressions.ipynb">APL Expressions</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Arrays.ipynb">Arrays</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Functions.ipynb">Functions</a>
+						<h3>Closer Looks</h3>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Arithmetic Functions.ipynb">Arithmetic Functions: <code>+</code> <code>-</code> <code>×</code> <code>÷</code> <code>*</code> <code>⍟</code> <code>⌈</code> <code>⌊</code> <code>|</code></a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Grading and Sorting.ipynb">Grading and Sorting: <code>⍋</code> <code>⍒</code></a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Modifying Rank and Depth.ipynb">Modifying Rank and Depth: <code>↑</code> <code>↓</code> <code>⊂</code> <code>⊃</code></a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Random Numbers.ipynb">Random Numbers: <code>?</code></a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Boolean Functions and Boolean Algebra.ipynb">Boolean Functions and Boolean Algebra: <code>∧</code> <code>∨</code> <code>⍱</code> <code>⍲</code> etc.</a>
+												 <a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Comparison Functions.ipynb">Comparison Functions: <code>&lt;</code> <code>≤</code> <code>=</code> <code>≥</code> <code>></code> <code>≠</code></a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Reduce and Scan.ipynb">Reduce and Scan: <code>/</code> <code>\</code></a>
+						<!---<h3>Highlights of Recent Releases</h3>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v14.ipynb">New in version 14.0</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v15.ipynb">New in version 15.0</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v16.ipynb">New in version 16.0</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v17.ipynb">New in version 17.0</a>
+						--->
+						<h3>Further Explorations</h3>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Conway's Game of Life.ipynb">Conway's Game of Life</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Lookup Without Replacement.ipynb">Lookup Without Replacement</a>
+						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Sudoku Solver.ipynb">Sudoku Solver</a>
+					</div>
+				</div>
+			<div id="mdrender"></div>
+			<div class="hidden" id="learnButtons"><p id="lessonFN">Viewing lesson:</p><button id="s" accesskey="s" id="nbclose" onclick="nbClose()" title="Stop lesson"><svg xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81l5-4.5M12 3L2 12h3v8h6v-6h2v6h6v-8h3L12 3z"/></svg></button><button id="r" accesskey="r" onclick="nbReload()" title="Restart lesson"><svg class="flip" xmlns="https://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24" viewBox="0 0 24 24" width="24"><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/><rect fill="none" height="24" width="24"/><path d="M12,5V1L7,6l5,5V7c3.31,0,6,2.69,6,6s-2.69,6-6,6s-6-2.69-6-6H4c0,4.42,3.58,8,8,8s8-3.58,8-8S16.42,5,12,5z"/></svg></button><button id="p" accesskey="p" onclick="nbNext(0)" title="Previous step"><svg class="flip" xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg></button><button id="n" accesskey="n" onclick="nbNext(1)" title="Next step"><svg xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M14 8.83L17.17 12 14 15.17V14H6v-4h8V8.83M12 4v4H4v8h8v4l8-8-8-8z"/></svg></button></div>
+		<br/></div>
+		<div class="content" id="primer">
+			<h1>Cheat Sheet</h1>
+			<h2>Primitives</h2>
+			Use the language bar above to insert glyphs. Click on a glyph below to print basic usage and how to type it. Enter <code class="apl">]help </code> followed by a symbol for details; for example <code class="apl">]help +</code>.
+			<div id="primerGlyphs" onclick="glyphHelp(event.target.value)">
+				<h4>Mathematics</h4>
+				<input type="button" value="+">
+				<input type="button" value="-">
+				<input type="button" value="×">
+				<input type="button" value="÷">
+				<input type="button" value="⌈">
+				<input type="button" value="⌊">
+				<input type="button" value="*">
+				<input type="button" value="!">
+				<input type="button" value="|">
+				<input type="button" value="⍟">
+				<input type="button" value="○">
+				<input type="button" value="⌹">
+				<input type="button" value="⊥">
+				<input type="button" value="⊤">
+				<input type="button" value="?">
+				<h4>Logic and Comparison</h4>
+		<input type="button" value="~">
+				<input type="button" value="∧">
+				<input type="button" value="∨">
+				<input type="button" value="⍲">
+				<input type="button" value="⍱">
+				<input type="button" value="<">
+				<input type="button" value=">">
+				<input type="button" value="≤">
+				<input type="button" value="≥">
+				<input type="button" value="=">
+				<input type="button" value="≠">
+				<input type="button" value="≡">
+				<input type="button" value="≢">
+				<h4>Structural</h4>
+				<input type="button" value="⍴">
+				<input type="button" value=",">
+				<input type="button" value="⍪">
+				<input type="button" value="⌽">
+				<input type="button" value="⊖">
+				<input type="button" value="⍉">
+				<input type="button" value="↑">
+				<input type="button" value="↓">
+				<input type="button" value="⊂">
+				<input type="button" value="⊆">
+				<input type="button" value="≡">
+				<input type="button" value="∊">
+				<h4>Selection and Set Operations</h4>
+				<input type="button" value="⌷">
+				<input type="button" value="⊃">
+				<input type="button" value="/">
+				<input type="button" value="⌿">
+				<input onclick="glyphHelp('\\');" type="button" value="\">
+				<input type="button" value="⍀">
+				<input type="button" value="~">
+				<input type="button" value="≠">
+				<input type="button" value="∪">
+				<input type="button" value="∩">
+				<input type="button" value="⊣">
+				<input type="button" value="⊢">
+				<h4>Search and Ordering</h4>
+				<input type="button" value="⍳">
+				<input type="button" value="⍸">
+				<input type="button" value="∊">
+				<input type="button" value="⍷">
+				<input type="button" value="⍋">
+				<input type="button" value="⍒">
+				<h4>Operators</h4>
+				<input type="button" value="¨">
+				<input type="button" value="⍨">
+				<input type="button" value="⍣">
+				<input type="button" value=".">
+				<input type="button" value="∘">
+				<input type="button" value="/">
+				<input type="button" value="\">
+				<input type="button" value="⌿">
+				<input type="button" value="⍀">
+				<input type="button" value="⌸">
+				<input type="button" value="⍤">
+				<input type="button" value="⍥">
+				<input type="button" value="⌺">
+				<input type="button" value="@">
+				<input type="button" value="⍠">        
+				<h4>Miscellaneous</h4>
+				<input type="button" value="¯">
+		<!-- <input type="button" value="'">
+				<input type="button" value="→"/><sup>(1)</sup> -->
+				<input type="button" value="←">
+				<input type="button" value="⍬">
+				<input type="button" value="⍎">
+				<input type="button" value="⍕">
+				<input type="button" value="⋄">
+				<input type="button" value="⍝">
+				<input type="button" value="∇">
+				<input type="button" value="⍺">
+				<input type="button" value="⍵">
+		 <!--   <input type="button" value="⎕"><sup>(1)</sup>
+				<input type="button" value="⍞"><sup>(1)</sup>
+		 <input type="button" value="[]">
+				<input type="button" value="{}">
+				<ol>
+					<li>On TryAPL: output only 
+				</ol>-->
+			</div>
+
+			<h2>Additional features</h2>
+The below subset of Dyalog's functionality is also supported in TryAPL. Enter for example <code class="apl">]help ]display</code> for details:
+<h3>Listing</h3>
+<!--<code class="apl">]Defs  </code>&emsp;display single-line function and operator definitions<br />-->
+<code class="apl">]Display ⍳2 3</code>&emsp;fully visualise array's structure<br />
+<code class="apl">)VARS  </code>&emsp;list variable names<br />
+<code class="apl">)FNS   </code>&emsp;list function names<br />
+<code class="apl">)OPS   </code>&emsp;list operator names
+
+<h3>Undoing Assignments</h3>
+<code class="apl">)CLEAR </code>&emsp;clear workspace<br />
+<code class="apl">)ERASE </code>&emsp;name delete name(s)<br />
+
+<script>ins=t=>{
+session.focus()
+s=session.selectionStart
+n=t.innerText.trim()
+session.value=session.value.slice(0,session.selectionStart)
+						 +n
+						 +session.value.slice(session.selectionEnd)
+						 session.selectionStart=(session.selectionEnd=s+n.length)
+						 session.focus()
+}</script>
+<h3>Settings</h3>
+<code class="apl" onclick="ins(this)">⎕CT    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/ct.htm" target="_blank">Comparison Tolerance</a><br />
+<code class="apl" onclick="ins(this)">⎕DIV   </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/div.htm" target="_blank">Division Method</a><br />
+<code class="apl" onclick="ins(this)">⎕FR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/ct.htm" target="_blank">Floating-Point Representation</a><br />
+<code class="apl" onclick="ins(this)">⎕IO    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/io.htm" target="_blank">Index Origin</a><br />
+<code class="apl" onclick="ins(this)">⎕PP    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/pp.htm" target="_blank">Print Precision</a><br />
+<code class="apl" onclick="ins(this)">⎕RL    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/rl.htm" target="_blank">Random Link</a>
+
+<h3>Definition</h3>
+<code class="apl" onclick="ins(this)">⎕AT    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/at.htm" target="_blank">Attributes</a><br />
+<code class="apl" onclick="ins(this)">⎕CR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/cr.htm" target="_blank">Canonical Representation</a><br />
+<code class="apl" onclick="ins(this)">⎕FX    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/fx.htm" target="_blank">Fix Definition</a><br />
+<code class="apl" onclick="ins(this)">⎕NR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/nr.htm" target="_blank">Nested Representation</a><br />
+<code class="apl" onclick="ins(this)">⎕VR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/vr.htm" target="_blank">Vector Representation</a><br />
+
+<h3>Information</h3>
+<code class="apl" onclick="ins(this)">⎕DR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/dr.htm" target="_blank">Data Representation</a><br />
+<code class="apl" onclick="ins(this)">⎕NC    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/nc.htm" target="_blank">Name Class</a><br />
+<code class="apl" onclick="ins(this)">⎕NL    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/nl.htm" target="_blank">Name List</a><br />
+<code class="apl" onclick="ins(this)">⎕SIZE  </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/size.htm" target="_blank">Size of Object</a><br />
+<code class="apl" onclick="ins(this)">⎕TS    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/ts.htm" target="_blank">Time Stamp</a>
+
+<h3>Text Manipulation</h3>
+<code class="apl" onclick="ins(this)">⎕C     </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/c.htm" target="_blank">Case Convert</a><br />
+<code class="apl" onclick="ins(this)">⎕FMT   </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/fmt.htm" target="_blank">Format</a><br />
+<code class="apl" onclick="ins(this)">⎕R     </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/r.htm" target="_blank">Replace</a><br />
+<code class="apl" onclick="ins(this)">⎕S     </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/s.htm" target="_blank">Search</a><br />
+<code class="apl" onclick="ins(this)">⎕VFI   </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/vfi.htm" target="_blank">Verify &amp; Fix Input</a>
+
+<h3>Data Conversion</h3>
+<code class="apl" onclick="ins(this)">⎕DR    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/dr.htm" target="_blank">Data Representation</a><br />
+<code class="apl" onclick="ins(this)">⎕DT    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/dt.htm" target="_blank">Date-time Convert</a><br />
+<code class="apl" onclick="ins(this)">⎕JSON  </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/json.htm" target="_blank">JSON Convert</a><br />
+<code class="apl" onclick="ins(this)">⎕UCS   </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/ucs.htm" target="_blank">Unicode Convert</a><br />
+<code class="apl" onclick="ins(this)">⎕XML   </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/xml.htm" target="_blank">XML Convert</a>
+
+<h3>Other</h3>
+<code class="apl" onclick="ins(this)">⎕A     </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/a.htm" target="_blank">Alphabetic Characters</a><br />
+<code class="apl" onclick="ins(this)">⎕D     </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/d.htm" target="_blank">Digits</a><br />
+<code class="apl" onclick="ins(this)">⎕DL    </code>&emsp;<a href="https://help.dyalog.com/latest/Content/Language/System%20Functions/dl.htm" target="_blank">Delay</a><br />
+
+		<br/></div>
+		<div class="content" id="links">
+			<h1>Useful links</h1>
+			<h2>APL Wiki</h2>
+			Most information is available on the <a target="_blank" href="https://aplwiki.com">APL Wiki</a>, for example:
+			<ul>
+				<li><a target="_blank" href="https://aplwiki.com/wiki/Learning_resources">Learning resources</a></li>
+				<li><a target="_blank" href="https://aplwiki.com/wiki/Running_APL">How to run APL</a></li>
+				<li><a target="_blank" href="https://aplwiki.com/wiki/Documentation_suites">Online documentation</a></li>
+			</ul>
+			<h2>Getting help</h2>
+			Having trouble? You might find your question already answered on: 
+			<ul>
+				<li><a target="_blank" href="https://aplcart.info/">APLcart</a></li>
+				<li><a target="_blank" href="https://stackoverflow.com/questions/tagged/apl">Stack Overflow</a></li>
+			</ul>
+			If that didn't do it, just get in touch with the welcoming community:
+			<ul>
+				<li>Chat in <a target="_blank" href="https://chat.stackexchange.com/rooms/52405/the-apl-orchard">the APL Orchard</a>, a very active chat room</li>
+				<li><a target="_blank" href="https://stackoverflow.com/questions/ask?tags=apl">Ask a question</a> on Stack Overflow</li>
+				<li>Post on <a target="_blank" href="https://forums.dyalog.com/">the Dyalog Forums</a></li>
+				<li>Ask on the <a target="_blank" href="https://www.reddit.com/r/apljk/">r/apljk</a> subreddit</li>
+				<li>Dyalog social media: <a href="https://www.twitter.com/DyalogAPL" target="_blank">Twitter</a>, 
+					<a href="https://www.facebook.com/DyalogAPL" target="_blank">Facebook</a>, 
+					<a href="https://www.linkedin.com/company/dyalog-ltd-" target="_blank">LinkedIn</a>
+			</ul>
+
+			<h2>Recommended videos</h2>
+			There are lots of good APL videos out there, including these hand-picked masterpieces:
+			<ul>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=a9xAKttWgP4">Conway's Game of Life in APL</a></li>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=X3bv4Iu1aEg">Palindromic Expression for Phi in APL</a></li>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=DmT80OseAGs">A Sudoku Solver in APL</a></li>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=_DTpQ4Kk2wA">APL demonstration 1975</a></li>
+				<li><a target="_blank" href="https://www.infoq.com/presentations/Why-APL-is-Still-Cool">Why APL Is Still Cool</a> (at QCon 2011)</li>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=v7Mt0GYHU9A">Design Patterns vs Anti pattern in APL</a> (at FnConf17)</li>
+				<li><a target="_blank" href="https://www.youtube.com/watch?v=PlM9BXfu7UY">Pragmatic Functional Programming</a> with Dyalog's CTO (Talks at Google, 2015)</a></li>
+				<li><a target="_blank" href="https://dyalog.tv/">Dyalog TV</a> (webinars and user meetings)
+			</p>
+			</ul>
+		</div>
+		<div class="content" id="help">
+			<h1>Help and About</h1>
+			<h2>Primitives</h2>
+			Use the language bar above to insert glyphs. Click on a glyph in the <a href="#" onclick="showTab('Primer');">Primer tab</a> to print basic usage and how to type it. Enter <code class="apl">]help</code> followed by a symbol for details; for example <code class="apl">]help +</code>.
+			<br><br>
+	  Use the language bar above to insert glyphs. Hovering over a symbol in the language bar, or clicking on it in the <a href="#" onclick="showTab('Primer');">Primer tab</a>, will show:
+	  <ul id="lbInfo">
+				<li>The APL symbol.</li>
+				<li>The common names for the concepts that the symbol represents.</li>
+				<li>The symbol's <strong>Tab</strong> input method: Enter two symbols, then press <kbd>Tab&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="flip" width="12" height="12"><path fill="currentColor" d="M0 168v-16c0-13.255 10.745-24 24-24h360V80c0-21.367 25.899-32.042 40.971-16.971l80 80c9.372 9.373 9.372 24.569 0 33.941l-80 80C409.956 271.982 384 261.456 384 240v-48H24c-13.255 0-24-10.745-24-24zm488 152H128v-48c0-21.314-25.862-32.08-40.971-16.971l-80 80c-9.372 9.373-9.372 24.569 0 33.941l80 80C102.057 463.997 128 453.437 128 432v-48h360c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24z"></path></svg></kbd> to combine them. For example, <kbd class="l">&lt;</kbd><kbd class="l">-</kbd><kbd>Tab&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="flip" width="12" height="12"><path fill="currentColor" d="M0 168v-16c0-13.255 10.745-24 24-24h360V80c0-21.367 25.899-32.042 40.971-16.971l80 80c9.372 9.373 9.372 24.569 0 33.941l-80 80C409.956 271.982 384 261.456 384 240v-48H24c-13.255 0-24-10.745-24-24zm488 152H128v-48c0-21.314-25.862-32.08-40.971-16.971l-80 80c-9.372 9.373-9.372 24.569 0 33.941l80 80C102.057 463.997 128 453.437 128 432v-48h360c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24z"></path></svg></kbd>            yields the <code class="l">←</code> symbol.</li>
+				<li>The symbol's <strong>Prefix</strong> input method: Press any one of the prefix keys
+						<kbd class="l">`</kbd>,
+						<kbd class="l">§</kbd>,
+						<kbd class="l">°</kbd>,
+						<kbd class="l">²</kbd>,
+						<kbd class="l">µ</kbd>,
+						<kbd class="l" style="text-decoration:line-through">º</kbd>,
+						<kbd class="l">½</kbd> or
+						<kbd class="l">ù</kbd>, and then the key according to the en-US keyboard diagram <a href="https://dfns.dyalog.com/n_keyboards.htm" class="kbd" target="_blank">here</a>.</li>
+		</ul>    
+		More information on entering APL symbols using your keyboard can be found on <a target="_blank" href="https://aplwiki.com/wiki/Typing_glyphs">the APL Wiki</a>.     
+			<h2>Shortcut keys</h2>
+			<table class="creditsTable">
+				<tr><td><kbd>Enter</kbd></td><td>Execute current line</td></tr>
+				<tr><td><kbd>Shift</kbd>+<kbd>Escape</kbd></td><td>Clear current line</td></tr>
+				<tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Backspace</kbd> or <kbd>Alt</kbd>+<kbd>Up</kbd></td><td>Previous input</td></tr>
+				<tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> or <kbd>Alt</kbd>+<kbd>Down</kbd></td><td>Next input</td></tr>
+			</table>      
+			<table class="creditsTable">
+				<tr><td>Access-key <kbd class="l">h</kbd></td><td>Open language <u>h</u>elp</td></tr>
+				<tr><td>Access-key <kbd class="l">z</kbd></td><td><u>Z</u>oom right pane</td></tr>
+				<tr><td>Access-key <kbd class="l">l</kbd></td><td>Perma<u>l</u>ink in URL bar</td></tr>
+				<tr><td>Access-key <kbd class="l">b</kbd></td><td>Use <u>b</u>lack theme</td></tr>
+				<tr><td>Access-key <kbd class="l">w</kbd></td><td>Use <u>w</u>hite theme</td></tr>
+			</table>
+			<p>You can navigate the tabs using the keyboard:</p>
+			<table class="creditsTable">
+				<tr><td>Access-key <kbd class="l">i</kbd></td><td>Open and focus on <u>I</u>ntro tab</tr>
+				<tr><td><kbd>Tab&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="flip" width="12" height="12"><path fill="currentColor" d="M0 168v-16c0-13.255 10.745-24 24-24h360V80c0-21.367 25.899-32.042 40.971-16.971l80 80c9.372 9.373 9.372 24.569 0 33.941l-80 80C409.956 271.982 384 261.456 384 240v-48H24c-13.255 0-24-10.745-24-24zm488 152H128v-48c0-21.314-25.862-32.08-40.971-16.971l-80 80c-9.372 9.373-9.372 24.569 0 33.941l80 80C102.057 463.997 128 453.437 128 432v-48h360c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24z"></path></svg></kbd></td><td>Focus on next <u>tab</u></td></tr>
+				<tr><td><kbd>Shift</kbd>+<kbd>Tab&nbsp;<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="flip" width="12" height="12"><path fill="currentColor" d="M0 168v-16c0-13.255 10.745-24 24-24h360V80c0-21.367 25.899-32.042 40.971-16.971l80 80c9.372 9.373 9.372 24.569 0 33.941l-80 80C409.956 271.982 384 261.456 384 240v-48H24c-13.255 0-24-10.745-24-24zm488 152H128v-48c0-21.314-25.862-32.08-40.971-16.971l-80 80c-9.372 9.373-9.372 24.569 0 33.941l80 80C102.057 463.997 128 453.437 128 432v-48h360c13.255 0 24-10.745 24-24v-16c0-13.255-10.745-24-24-24z"></path></svg></kbd></td><td>Focus on previous tab</td></tr>
+				<tr><td><kbd>&emsp;Space&emsp;</kbd></td><td>Select focused tab</td></tr>
+			</table>
+			<p>While running a notebook:</p>
+			<table class="creditsTable">
+				<tr><td>Access-key <kbd class="l">s</kbd></td><td><u>S</u>top current</td></tr>
+				<tr><td>Access-key <kbd class="l">r</kbd></td><td><u>R</u>estart current</td></tr>
+				<tr><td>Access-key <kbd class="l">p</kbd></td><td><u>P</u>revious step</td></tr>
+				<tr><td>Access-key <kbd class="l">n</kbd></td><td><u>N</u>ext step</td></tr>
+			</table>
+			<h2>About TryAPL</h2>
+			<p><b>TryAPL</b> is a JavaScript front-end sending requests to a state-less <a target="_blank" href="https://github.com/Dyalog/Jarvis/">Jarvis</a> back-end which uses <a target="_blank" href="https://github.com/abrudz/dyalog-safe-exec">Safe Execute</a> for <a target="_blank" href="https://dyalog.com">Dyalog APL</a> under <b>Docker</b>. Dyalog APL runs under <b>Linux</b>, including <b>Raspberry Pi</b>, <b>Microsoft Windows</b>, and <b>macOS</b>.</p>
+			<p>The back-end is available for direct use too. This means that anyone can write a new front-end or otherwise avail themselves of the computation engine. The simple API is <a target="_blank" href="https://apl.wiki/TryAPL#API">described on APL Wiki</a>.</p>
+			<p class="ipynbinfo">The <a href="#" onclick="learnTab.click()">Learn</a> tab's lessons are Jupyter Notebooks documents and can be <a target="_blank" href="https://github.com/Dyalog/dyalog-jupyter-kernel/wiki">used locally</a>. We welcome submissions of notebooks for inclusion in TryAPL, as well as reports of anomalies, suggestions, criticisms, and comments to <a href="mailto:tryapl@dyalog.com">tryapl@dyalog.com</a>.</p>
+			<h2 id="limitations">Limitations</h2>
+				<p>TryAPL has is limited support for multi-line input. Lines that form a block with the previous line must begin with a tab character (U+09) which is automatically inserted if a line or block is missing closing one or more braces (<code>}</code>). For <a target="_blank" href="https://apl.wiki/tradfn">tradfns</a>, and multi-line <a target="_blank" href="https://apl.wiki/control_structure">control structures</a>, continue the current block using <kbd>Alt</kbd>+<kbd>Enter</kbd>. Press <kbd>Esc</kbd> to leave multi-line input mode.</p>
+				<p>Output, whether implicit or using <code>⎕←</code> or <code>⍞←</code>, is not supported.</p>
+				<p>To protect the server, expressions are checked against a whitelist while <code>⍎</code>, <code>⍕</code>, <code>⍣</code>, <code>⌶</code>, and <code>⎕FX</code> have limited functionality. All supported quad-names, system and user commands are listed on the <a href="#" onclick="primerTab.click()"><b>Primer</b></a> tab.</p>
+				<p><b>Space and time limits</b> can be queried with <code class="apl">]State</code>. Exceeding the maximum time for execution of an expression causes the execution to be cancelled and the workspace will remain as it was before the expression was entered.</p>
+			<p>When using TryAPL, your workspace is automatically saved to local storage in your web browser. <strong>No data is stored on our servers</strong>; it is only sent across the network when you execute code. Manage your data from the <a href="#" onclick="fileTab.click()">File</a> tab.</p>
+			<h2>Credits</h2>
+			<table class="creditsTable">
+				<tr><td>Implementation</td><td>Brian Becker</td></tr>
+				<tr><td>Design</td><td>Brian McCormick</td></tr>
+				<tr><td>Additional tutorials</td><td>Will Robertson</td></tr>
+				<tr><td>Reimplementation</td><td>Richard Park</td></tr>
+				<tr><td>Redesign</td><td>Adám Brudzewsky</td></tr>
+			</table>        <table class="creditsTable">
+				<tr><td>Inspiration</td><td>Joel Hough</td></tr>
+				<tr><td>Ideas</td><td colspan="2">John Scholes, Andy Shiers, Roger Hui, John Daintree</td></tr>
+				<tr><td>Domain</td><td>Shaun Gilchrist</td></tr>
+			</table>
+			<table class="creditsTable">        
+				<tr><td>APL web service</td><td><a target="_blank" href="https://github.com/Dyalog/Jarvis/">Jarvis</a></td></tr>
+				<tr><td>APL whitelist</td><td><a target="_blank" href="https://github.com/abrudz/dyalog-safe-exec">Safe Execute</a></td></tr>
+				<tr><td>Split panes</td><td><a target="_blank" href="https://split.js.org/">Split.js</a></td></tr>
+				<tr><td>Text font</td><td><a target="_blank" href="https://github.com/googlefonts/nunito">Nunito</a></td></tr>                
+				<tr><td>Markdown</td><td><a target="_blank" href="https://marked.js.org">Marked.js</a></td></tr>
+				<tr><td>Formulas</td><td><a target="_blank" href="https://www.mathjax.org/">MathJax</a></td></tr>
+			</table>
+		</div>
+		<div class="content" id="file">
+				<h1>Sharing code</h1>
+				<p>Access-key <kbd class="l">l</kbd> will generate a shareable link in the URL bar for the line of code indicated by your text cursor.</p>
+				<h1>Workspace Data</h1>       
+				<p>By default, your workspace is <strong>not</strong> saved between page visits, unless you opt in: </p>
+				<!--<p>Use Google Analytics to track usage statistics <input type="checkbox" id="gaCheck"></p>-->
+				<p><label for="wsSaveCheck"><input type="checkbox" id="wsSaveCheck" onchange="setCanSave()"> Save workspace using local storage</label></p>
+				<p>If the tickbox above is checked, then your workspace is automatically saved in your browser. You can always save your workspace to disk manually ― see below. <strong>No data is ever stored on our servers</strong>; it is only sent across the network when you execute code.</p>
+				<ul>
+				<li>Use <code class="apl">⎕NL-⍳9</code> to see which names are used in your workspace.
+				<li>Use <code class="apl">)CLEAR</code> to remove all names from your workspace.
+				<li>Use <code class="apl">)ERASE name</code> to remove <code class="apl">name</code> from your workspace.
+				</ul>
+				<p>If the URL contains the <strong>clear</strong> parameter (tryapl.org?clear) then you will have a clear workspace and changes will not be saved. Removing the <strong>clear</strong> parameter will restore the data, if it exists and the checkbox above is ticked.</p>
+				<p>You can download your workspace as a <b>.tryapl</b> file: <button id="dlWS" onclick="downloadWS()" accesskey="d">Download&hellip;</button>
+				</p>
+				<p>You can upload a <b>.tryapl</b> workspace from your computer or load it from a URL: <button onclick="upload.click()">Upload&hellip;</button></p>
+				<p class="urlInputGroup"><input type="text" placeholder=".tryapl Workspace URL" id="wsURL" class="inURL"><button class="run" onclick="wsFromURL('#wsURL')"><svg xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"/></svg></button>
+		<div id="wsErrorDiv" class="errorDiv">
+						<span id="wsError" class="errorSpan"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z" class=""></path></svg>&nbsp;Load failed!</span>
+					</div>
+		</p>
+				<input type="file" id="upload" accept=".tryapl" onchange="uploadWS()" style="display:none;" accesskey="u">
+				<br><br>
+		</div>
+	</div>
+	<div id="rightPane" class="split">
+		<textarea spellcheck="false" id="session" autofocus wrap="off"></textarea>
+		<i id="linkIcon" class="fa fa-link" onclick="permaLink();" title="Link to expression in URL bar"></i>
+		<div id="replBar">
+			<p class="urlInputGroup" id="aplInputGroup">
+			<input spellcheck="false" id="oneLineInput" class="inURL" type=text width="100%" autocomplete="off"><button class="run" id="oneLineSubmit" onclick="submitOneLine()"><svg xmlns="https://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M10 8.64L15.27 12 10 15.36V8.64M8 5v14l11-7L8 5z"></path></svg></button>
+			</p>
+		</div>
+	</div>
+	<div id="confirmLoadWS" class="modal">
+		<div class="modal-content">
+			<span id="close" class="close">&times;</span>
+			<h2>WARNING</h2><p>Loading another workspace will overwrite your current workspace.</p>
+			<p>Use the <kbd>Download&hellip;</kbd> button to save your workspace now.</p>
+			<p><button onclick="downloadWS()" accesskey="d">Download&hellip;</button>
+			<button id="loadWS">Load</button>
+			<button id="cancel">Cancel</button></p>
+		</div>
+	</div>
+	<script src="lib/tiolb.js"></script>
+	</body>
+</html>
