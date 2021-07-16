@@ -403,8 +403,8 @@ session.value=session.value.slice(0,session.selectionStart)
 			<p>The back-end is available for direct use too. This means that anyone can write a new front-end or otherwise avail themselves of the computation engine. The simple API is <a target="_blank" href="https://apl.wiki/TryAPL#API">described on APL Wiki</a>.</p>
 			<p class="ipynbinfo">The <a href="#" onclick="learnTab.click()">Learn</a> tab's lessons are Jupyter Notebooks documents and can be <a target="_blank" href="https://github.com/Dyalog/dyalog-jupyter-kernel/wiki">used locally</a>. We welcome submissions of notebooks for inclusion in TryAPL, as well as reports of anomalies, suggestions, criticisms, and comments to <a href="mailto:tryapl@dyalog.com">tryapl@dyalog.com</a>.</p>
 			<h2 id="limitations">Limitations</h2>
-				<p>TryAPL has is limited support for multi-line input. Lines that form a block with the previous line must begin with a tab character (U+09) which is automatically inserted if a line or block is missing closing one or more braces (<code>}</code>). For <a target="_blank" href="https://apl.wiki/tradfn">tradfns</a>, and multi-line <a target="_blank" href="https://apl.wiki/control_structure">control structures</a>, continue the current block using <kbd>Alt</kbd>+<kbd>Enter</kbd>. Press <kbd>Esc</kbd> to leave multi-line input mode.</p>
-				<p>Output, whether implicit or using <code>⎕←</code> or <code>⍞←</code>, is not supported.</p>
+				<p>TryAPL has limited support for multi-line input. Lines that form a block with the previous line must begin with a tab character (U+09) which is automatically inserted if a line or block is missing closing one or more braces (<code>}</code>). For <a target="_blank" href="https://apl.wiki/tradfn">tradfns</a>, and multi-line <a target="_blank" href="https://apl.wiki/control_structure">control structures</a>, continue the current block using <kbd>Alt</kbd>+<kbd>Enter</kbd>. Press <kbd>Esc</kbd> to leave multi-line input mode.</p>
+				<p>Output, whether using <code>⎕←</code> (other than at the beginning of a statement), <code>⍞←</code>, or implicit output, is not supported.</p>
 				<p>To protect the server, expressions are checked against a whitelist while <code>⍎</code>, <code>⍕</code>, <code>⍣</code>, <code>⌶</code>, and <code>⎕FX</code> have limited functionality. All supported quad-names, system and user commands are listed on the <a href="#" onclick="primerTab.click()"><b>Primer</b></a> tab.</p>
 				<p><b>Space and time limits</b> can be queried with <code class="apl">]State</code>. Exceeding the maximum time for execution of an expression causes the execution to be cancelled and the workspace will remain as it was before the expression was entered.</p>
 			<p>When using TryAPL, your workspace is automatically saved to local storage in your web browser. <strong>No data is stored on our servers</strong>; it is only sent across the network when you execute code. Manage your data from the <a href="#" onclick="fileTab.click()">File</a> tab.</p>
@@ -424,7 +424,7 @@ session.value=session.value.slice(0,session.selectionStart)
 				<tr><td>APL web service</td><td><a target="_blank" href="https://github.com/Dyalog/Jarvis/">Jarvis</a></td></tr>
 				<tr><td>APL whitelist</td><td><a target="_blank" href="https://github.com/abrudz/dyalog-safe-exec">Safe Execute</a></td></tr>
 				<tr><td>Split panes</td><td><a target="_blank" href="https://split.js.org/">Split.js</a></td></tr>
-				<tr><td>Text font</td><td><a target="_blank" href="https://github.com/googlefonts/nunito">Nunito</a></td></tr>                
+				<tr><td>Text font</td><td><a target="_blank" href="https://github.com/googlefonts/nunito">Nunito</a></td></tr>
 				<tr><td>Markdown</td><td><a target="_blank" href="https://marked.js.org">Marked.js</a></td></tr>
 				<tr><td>Formulas</td><td><a target="_blank" href="https://www.mathjax.org/">MathJax</a></td></tr>
 			</table>
