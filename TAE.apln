@@ -96,7 +96,7 @@
               :Case ']state'
                   output,←State ns
               :Case ']dinput'
-                  input←'⎕FX ',##.TAEL.repObj 1↓input(≠⊆⊣)⎕UCS 10
+                  input←'⎕FX ',##.TAEL.repObj input(≠⊆⊣)⎕UCS 10
                   continue←1
               :Case ']display'
                   display←1 ⋄ continue←1
