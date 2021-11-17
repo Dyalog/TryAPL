@@ -2,7 +2,6 @@
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
     Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
-
     :Section defs
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ debug←0
 
@@ -17,6 +16,12 @@
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
+    reportInterval←60E3 ⍝ ms
+    :EndSection
+    :Section State
+    lastReport←-reportInterval
+    reqs←0
+    pressKeys←1
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
@@ -24,13 +29,42 @@
     :EndNamespace
 
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
       :If 900⌶0 ⍝ monadic
+      :AndIf 0≠debug
+      :AndIf pressKeys
+          pressKeys←0
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
+     
+      scheduledReport←⎕AI[3]>reportInterval+lastReport
+      :If scheduledReport
+      :OrIf ']reportnow'≡⎕C input~' ',⎕D
+          output←,⊂'"─── TRYAPL STATUS REPORT AT" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
+          output,←⊂'∘ Requests processed since startup:',reqs
+          output,←⊂'∘ Amount of CPU time consumed:',⎕AI[2],'ms'
+          output,←⊂'∘ Current number of threads:',≢⎕TNUMS
+          output,←⊂'∘ Workspace available without compation:',(2000⌶0),'B'
+          output,←⊂'∘ Number of threads',≢⎕TNUMS
+          :If scheduledReport
+              reportSize←3
+          :ElseIf ∨/⎕D∊input
+              reportSize←⍎'0',input∩⎕D
+          :Else
+              reportSize←10
+          :EndIf
+          output,←⊂'∘',reportSize,'largest items in #:',∊¨⌽¨reportSize↑{⍵[⍒⍵]}#.(('B',⎕SIZE,⊂)¨⎕NL-⍳9)
+          :If scheduledReport
+              ⍞←↑output
+          :Else
+              :Return
+          :EndIf
+      :EndIf
+      reqs+←1
+     
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
       :Trap debug↓0   ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
