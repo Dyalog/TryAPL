@@ -29,7 +29,7 @@
     :EndNamespace
 
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize;largest;reportNow
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
@@ -40,26 +40,24 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
+      reportNow←']reportnow'≡⎕C input~' ',⎕D
       scheduledReport←⎕AI[3]>reportInterval+lastReport
-      :If scheduledReport
-      :OrIf ']reportnow'≡⎕C input~' ',⎕D
-          output←,⊂'"─── TRYAPL STATUS REPORT AT" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
-          output,←⊂'∘ Requests processed since startup:',reqs
-          output,←⊂'∘ Amount of CPU time consumed:',⎕AI[2],'ms'
-          output,←⊂'∘ Current number of threads:',≢⎕TNUMS
-          output,←⊂'∘ Workspace available without compation:',(2000⌶0),'B'
-          output,←⊂'∘ Number of threads',≢⎕TNUMS
+      :If scheduledReport∨reportNow
+          output←,'"─── TRYAPL STATUS REPORT AT" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
+          output,←⊂'∘ Requests processed since startup: ',⍕reqs
+          output,←⊂'∘ Amount of CPU time consumed: ',⍕⎕AI[2],'ms'
+          output,←⊂'∘ Current number of threads: ',⍕≢⎕TNUMS
+          output,←⊂'∘ Workspace available without compaction: ',(⍕2000⌶0),' B'
+          output,←⊂'∘ Number of threads: ',⍕≢⎕TNUMS
+          largest←∊⍤⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,⊂)¨⎕NL-⍳9)
           :If scheduledReport
-              reportSize←3
-          :ElseIf ∨/⎕D∊input
-              reportSize←⍎'0',input∩⎕D
-          :Else
-              reportSize←10
+              ⍞←↑output,⊂'∘ 3 largest items in #:',⍕3↑largest
+              lastReport←3⊃⎕AI
           :EndIf
-          output,←⊂'∘',reportSize,'largest items in #:',∊¨⌽¨reportSize↑{⍵[⍒⍵]}#.(('B',⎕SIZE,⊂)¨⎕NL-⍳9)
-          :If scheduledReport
-              ⍞←↑output
-          :Else
+          :If reportNow
+              reportSize←(≢largest)⌊⊃⌽⍎'10 ',input∩⎕D
+              output,←⊂'∘ ',(⍕reportSize),' largest items in #:'
+              output,←'  '∘,∘⍕¨reportSize↑largest
               :Return
           :EndIf
       :EndIf
