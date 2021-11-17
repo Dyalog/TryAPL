@@ -44,6 +44,7 @@
       scheduledReport←⎕AI[3]>reportInterval+lastReport
       :If scheduledReport∨reportNow
           output←,'"─── TRYAPL STATUS REPORT AT" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
+          output,←⊂'∘ Time since startup: ',⍕⎕AI[3],'ms =',∊(0 24 60 60⊤⌊0.5+⎕AI[3]÷1000),¨'d' 'h' 'm' 's'
           output,←⊂'∘ Requests processed since startup: ',⍕reqs
           output,←⊂'∘ Amount of CPU time consumed: ',⍕⎕AI[2],'ms'
           output,←⊂'∘ Current number of threads: ',⍕≢⎕TNUMS
