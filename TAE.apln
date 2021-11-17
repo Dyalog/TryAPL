@@ -1,7 +1,7 @@
 ﻿:Namespace TAE
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
-    Run←{##.(ns bytes hash output)←Exec '' 0 '' ''}
+    Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
 
     :Section defs
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ debug←0
@@ -23,12 +23,14 @@
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
-    ∇ (ns85 bytes hash85 output)←Exec(ns85 bytes hash85 input);dyalog
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here
+    ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
-     ⍝ #.⎕TRAP←0 'C' '⍞←⎕JSON⍠''Compact'' 0⍠''Dialect'' ''JSON5''⊢⎕DMX ⋄ ⎕OFF'
+      :If 900⌶0 ⍝ monadic
+          {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
+      :EndIf
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
       :Trap debug↓0   ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
