@@ -30,7 +30,7 @@
     :EndNamespace
 
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize;largest;reportNow
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize;largest;reportNow;Thousands
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
@@ -53,14 +53,16 @@
           output,←⊂'∘ Workspace available without compaction: ',(⍕2000⌶0),' B'
           output,←⊂'∘ Total size of all ',(⍕≢#.⎕NL-⍳9),' items in #: ',#.(⍕+/⎕SIZE ⎕NL-⍳9),' B'
           largest←∊⍤⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,⊂)¨⎕NL-⍳9)
+          Thousands←'(\d)(\d{3})( |,)'⎕R'\1,\2\3'⍣≡
           :If scheduledReport
-              ⍞←↑output,⊂'∘ 3 largest items in #:',⍕3↑largest
+              ⍞←↑Thousands output,⊂'∘ 3 largest items in #:',⍕3↑largest
               lastReport←3⊃⎕AI
           :EndIf
           :If reportNow
               reportSize←(≢largest)⌊⊃⌽⍎'10 ',input∩⎕D
               output,←⊂'∘ ',(⍕reportSize),' largest items in #:'
               output,←'  '∘,∘⍕¨reportSize↑largest
+              output←Thousands output
               :Return
           :EndIf
       :EndIf
