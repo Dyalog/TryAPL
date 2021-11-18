@@ -73,8 +73,6 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
-      threadsHM⌈←≢⎕TNUMS
-     
       :If ']reportnow'≡⎕C input~' ',⎕D
           output←Report 1
           :Return
