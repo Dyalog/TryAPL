@@ -17,12 +17,15 @@
     jarvis←'Dyalog/Jarvis/master/Source/'
 
     reportInterval←60×60×1000 ⍝ ms
+    objs←'TAE' 'Server' 'Conga' 'Jarvis' 'DRC' 'HttpCommand'
     :EndSection
     :Section State
     lastReport←-reportInterval
     reqs←0
     pressKeys←1
-    threadsHighMark←0
+    threadsHM←0
+    sizeHM←0
+    objsHM←0 0 0 0 0 0
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
@@ -30,15 +33,15 @@
     :EndNamespace
 
     Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
-    ∇ output←report;threads
+    ∇ output←report
       output←'STATUS:'
       output,←' uptime=',Time ⎕AI[3]
       output,←' reqests=',⍕reqs
       output,←' CPU=',Time ⎕AI[2]
-      output,←' threadsNow/Hi=',(⍕threads),'/',⍕threadsHighMark←threadsHighMark⌈threads←≢⎕TNUMS
-      output,←' +/⎕SIZE=',#.(⍕+/⎕SIZE ⎕NL-⍳9),'B'
+      output,←' threadsNow/Hi=',(⍕≢⎕TNUMS),'/',⍕threadsHM
+      output,←' +/⎕SIZEsNow/Hi=',#.(⍕+/⎕SIZE ⎕NL-⍳9),'/',(⍕sizeHM),'B'
       output,←⎕UCS 13
-      output,←'Objs:',∊⍕¨∘⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,'=',⊂,' '⍨)¨⎕NL ¯9)
+      output,←'ObjsNow/Hi:',∊objs{' ',⍺,'=',(⍕#.⎕SIZE ⍺),'/',(⍕⍵),'B'}¨objsHM
       output,←⎕UCS 13
       output,←'MMstat:','/='⎕R'/'∊' quickWA' 'B WSused' 'B comps' ' CGs' ' pocksFree/Used' '/' ' sediment' ' allocNow/Hi/Max' '/' '/' 'B ⎕WAs'{⍺,'=',⍕⍵}¨2000⌶0 1 2 3 9 10 12 13 14 16 19
       output,←⎕UCS 13
@@ -55,8 +58,10 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
-     
-      threadsHighMark⌈←threads←≢⎕TNUMS
+      threadsHM⌈←≢⎕TNUMS
+      sizeHM⌈←#.(+/⎕SIZE ⎕NL-⍳9)
+      objsHM⌈←#.⎕SIZE objs
+
       :If ']reportnow'≡⎕C input~' ',⎕D
           output←('"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'),'='⎕R' = '⊢'.+?[:=]\S*'⎕S'&'⊢'(\d)(\d{3})(\D|$)'⎕R'\1,\2\3'⍣≡report
           :Return
