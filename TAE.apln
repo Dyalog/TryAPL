@@ -16,7 +16,7 @@
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
-    reportInterval←60E6 ⍝ ms
+    reportInterval←60×60×1000 ⍝ ms
     :EndSection
     :Section State
     lastReport←-reportInterval
@@ -29,8 +29,22 @@
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
+    Time←{,∊'[1-9]\d*.'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
+    ∇ output←report;threads
+      output←'STATUS:'
+      output,←' uptime=',Time ⎕AI[3]
+      output,←' reqestss=',⍕reqs
+      output,←' CPU=',Time ⎕AI[2]
+      output,←' threads=',(⍕threads),'/',⍕threadsHighMark←threadsHighMark⌈threads←≢⎕TNUMS
+      output,←' +/⎕SIZE=',#.(⍕+/⎕SIZE ⎕NL-⍳9),'B'
+      output,←⎕UCS 13
+      output,←'⎕SIZEs:',∊⍕¨∘⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,'=',⊂,' '⍨)¨⎕NL-⍳9)
+      output,←⎕UCS 13
+      output,←'2000⌶:',∊'quickWA' 'WSused' 'comps' 'effectCGs' 'freePocks' 'usedPocks' 'sed' 'alloc' 'allocHi' 'allocMin' 'allocMax' '⎕WAs'{' ',⍺,'=',⍕⍵}¨2000⌶0 1 2 3 9 10 12 13 14 15 16 19
+      output,←⎕UCS 13
+    ∇
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;scheduledReport;reportSize;largest;reportNow;Thousands
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
@@ -41,30 +55,15 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
-      reportNow←']reportnow'≡⎕C input~' ',⎕D
-      scheduledReport←⎕AI[3]>reportInterval+lastReport
-      :If scheduledReport∨reportNow
-          output←,'"─── TRYAPL STATUS REPORT AT" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
-          output,←⊂'∘ Time since startup: ',⍕⎕AI[3],'ms =',∊(0 24 60 60⊤⌊0.5+⎕AI[3]÷1000),¨'d' 'h' 'm' 's'
-          output,←⊂'∘ Requests processed since startup: ',⍕reqs
-          output,←⊂'∘ Amount of CPU time consumed: ',⍕⎕AI[2],'ms'
-          output,←⊂'∘ Current number of threads: ',⍕threadsHighMark⌈←≢⎕TNUMS
-          output,←⊂'∘ Highest number of threads: ',⍕threadsHighMark
-          output,←⊂'∘ Workspace available without compaction: ',(⍕2000⌶0),' B'
-          output,←⊂'∘ Total size of all ',(⍕≢#.⎕NL-⍳9),' items in #: ',#.(⍕+/⎕SIZE ⎕NL-⍳9),' B'
-          largest←∊⍤⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,⊂)¨⎕NL-⍳9)
-          Thousands←'(\d)(\d{3})( |,)'⎕R'\1,\2\3'⍣≡
-          :If scheduledReport
-              ⍞←↑Thousands output,⊂'∘ 3 largest items in #:',⍕3↑largest
-              lastReport←3⊃⎕AI
-          :EndIf
-          :If reportNow
-              reportSize←(≢largest)⌊⊃⌽⍎'10 ',input∩⎕D
-              output,←⊂'∘ ',(⍕reportSize),' largest items in #:'
-              output,←'  '∘,∘⍕¨reportSize↑largest
-              output←Thousands output
-              :Return
-          :EndIf
+     
+      threadsHighMark⌈←threads←≢⎕TNUMS
+      :If ']reportnow'≡⎕C input~' ',⎕D
+          output←('"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'),'='⎕R' = '⊢'.+?[:=]\S*'⎕S'&'⊢'(\d)(\d{3})(\D|$)'⎕R'\1,\2\3'⍣≡report
+          :Return
+      :EndIf
+      :If ⎕AI[3]>reportInterval+lastReport
+          ⍞←report
+          lastReport←3⊃⎕AI
       :EndIf
       reqs+←1
      
