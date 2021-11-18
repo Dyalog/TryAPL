@@ -51,7 +51,7 @@
       output,←⊂'TAEL=',initTAEL Delta #.⎕SIZE'TAEL'
      
       :If extended
-          mm←' QuickWA' 'kB WSused' 'kB Comps' ' CGs' ' PocksFree/Used' '/' ' Sediment' 'kB AllocNow/Hi/Max' '/' '/' 'kB ⎕WAs'
+          mm←' QuickWA' 'kB WSused' 'kB Comps' ' GCs' ' PocksFree/Used' '/' ' Sediment' 'kB AllocNow/Hi/Max' '/' '/' 'kB ⎕WAs'
           mm{⍺,'=',⍕KB ⍵}¨←2000⌶0 1 2 3 9 10 12 13 14 16 19
           output,←' '(≠⊆⊢)'/='⎕R'/'∊mm
           output←'(\d)([+→])'⎕R'\1 \2 '⊢' 0+(\d)'⎕R' \1'⊢'(\d)/(\d)'⎕R'\1 / \2'↓⍕↑'='(≠⊆⊢)¨output
