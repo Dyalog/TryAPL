@@ -16,7 +16,7 @@
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
-    reportInterval←60E3 ⍝ ms
+    reportInterval←60E6 ⍝ ms
     :EndSection
     :Section State
     lastReport←-reportInterval
