@@ -29,18 +29,18 @@
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
-    Time←{,∊'[1-9]\d*.'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
+    Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
     ∇ output←report;threads
       output←'STATUS:'
       output,←' uptime=',Time ⎕AI[3]
-      output,←' reqestss=',⍕reqs
+      output,←' reqests=',⍕reqs
       output,←' CPU=',Time ⎕AI[2]
-      output,←' threads=',(⍕threads),'/',⍕threadsHighMark←threadsHighMark⌈threads←≢⎕TNUMS
+      output,←' threadsNow/Hi=',(⍕threads),'/',⍕threadsHighMark←threadsHighMark⌈threads←≢⎕TNUMS
       output,←' +/⎕SIZE=',#.(⍕+/⎕SIZE ⎕NL-⍳9),'B'
       output,←⎕UCS 13
-      output,←'⎕SIZEs:',∊⍕¨∘⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,'=',⊂,' '⍨)¨⎕NL-⍳9)
+      output,←'Objs:',∊⍕¨∘⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,'=',⊂,' '⍨)¨⎕NL ¯9)
       output,←⎕UCS 13
-      output,←'2000⌶:',∊'quickWA' 'WSused' 'comps' 'effectCGs' 'freePocks' 'usedPocks' 'sed' 'alloc' 'allocHi' 'allocMin' 'allocMax' '⎕WAs'{' ',⍺,'=',⍕⍵}¨2000⌶0 1 2 3 9 10 12 13 14 15 16 19
+      output,←'MMstat:','/='⎕R'/'∊' quickWA' 'B WSused' 'B comps' ' CGs' ' pocksFree/Used' '/' ' sediment' ' allocNow/Hi/Max' '/' '/' 'B ⎕WAs'{⍺,'=',⍕⍵}¨2000⌶0 1 2 3 9 10 12 13 14 16 19
       output,←⎕UCS 13
     ∇
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
@@ -61,11 +61,11 @@
           output←('"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'),'='⎕R' = '⊢'.+?[:=]\S*'⎕S'&'⊢'(\d)(\d{3})(\D|$)'⎕R'\1,\2\3'⍣≡report
           :Return
       :EndIf
+      reqs+←1
       :If ⎕AI[3]>reportInterval+lastReport
           ⍞←report
           lastReport←3⊃⎕AI
       :EndIf
-      reqs+←1
      
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
       :Trap debug↓0   ⍝ Inform client of unexpected error
