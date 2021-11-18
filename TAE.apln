@@ -17,31 +17,49 @@
     jarvis←'Dyalog/Jarvis/master/Source/'
 
     reportInterval←60×60×1000 ⍝ ms
+    objs←'TAE' 'Server' 'Conga' 'Jarvis' 'DRC' 'HttpCommand'
     :EndSection
     :Section State
     lastReport←-reportInterval
     reqs←0
+    data←0
     pressKeys←1
-    threadsHighMark←0
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
-    Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
-    ∇ output←report;threads
-      output←'STATUS:'
-      output,←' uptime=',Time ⎕AI[3]
-      output,←' reqests=',⍕reqs
-      output,←' CPU=',Time ⎕AI[2]
-      output,←' threadsNow/Hi=',(⍕threads),'/',⍕threadsHighMark←threadsHighMark⌈threads←≢⎕TNUMS
-      output,←' +/⎕SIZE=',#.(⍕+/⎕SIZE ⎕NL-⍳9),'B'
-      output,←⎕UCS 13
-      output,←'Objs:',∊⍕¨∘⌽¨{⍵[⍒⍵]}#.(('B',⎕SIZE,'=',⊂,' '⍨)¨⎕NL ¯9)
-      output,←⎕UCS 13
-      output,←'MMstat:','/='⎕R'/'∊' quickWA' 'B WSused' 'B comps' ' CGs' ' pocksFree/Used' '/' ' sediment' ' allocNow/Hi/Max' '/' '/' 'B ⎕WAs'{⍺,'=',⍕⍵}¨2000⌶0 1 2 3 9 10 12 13 14 16 19
-      output,←⎕UCS 13
+    ∇ output←Report extended;mm;Time;KB;Delta
+      :If 0=⎕NC'initWS'
+          initWA←2000⌶0
+          initSize←#.(+/⎕SIZE ⎕NL-⍳9)
+          initTAE←⎕SIZE'#.TAE'
+          initTAEL←⎕SIZE'#.TAEL'
+      :EndIf
+      Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
+      KB←('(^|[^0-9])0\.0*(\d)' '\.'⎕R'\1\2' ',')1↓3⍕1000(⊣÷⍨⌊⍤÷⍨)⊢
+      Delta←∊'+' '→' 'kB',⍨∘KB¨⊣,-⍨,⊢
+      output←,⊂'Up=',Time 3⊃⎕AI
+      output,←⊂'Data=',(KB data),'kb'
+      output,←⊂'CPU=',Time 2⊃⎕AI
+      output,←⊂'&=',⍕≢⎕TNUMS
+      output,←⊂'Reqs=',⍕reqs
+      output,←⊂'QuickWA=',initWA Delta 2000⌶0
+      output,←⊂'+/⎕SIZE=',initSize Delta #.(+/⎕SIZE ⎕NL-⍳9)
+      output,←⊂'TAE=',initTAE Delta #.⎕SIZE'TAE'
+      output,←⊂'TAEL=',initTAEL Delta #.⎕SIZE'TAEL'
+     
+      :If extended
+          mm←' QuickWA' 'kB WSused' 'kB Comps' ' CGs' ' PocksFree/Used' '/' ' Sediment' 'kB AllocNow/Hi/Max' '/' '/' 'kB ⎕WAs'
+          mm{⍺,'=',⍕KB ⍵}¨←2000⌶0 1 2 3 9 10 12 13 14 16 19
+          output,←' '(≠⊆⊢)'/='⎕R'/'∊mm
+          output←'(\d)([+→])'⎕R'\1 \2 '⊢' 0+(\d)'⎕R' \1'⊢'(\d)/(\d)'⎕R'\1 / \2'↓⍕↑'='(≠⊆⊢)¨output
+          output,⍨←'"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
+      :Else
+          output←'STATUS:',(∊' ',¨output),⎕UCS 13
+          lastReport←3⊃⎕AI
+      :EndIf
     ∇
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog
@@ -55,20 +73,19 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
-     
-      threadsHighMark⌈←threads←≢⎕TNUMS
       :If ']reportnow'≡⎕C input~' ',⎕D
-          output←('"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'),'='⎕R' = '⊢'.+?[:=]\S*'⎕S'&'⊢'(\d)(\d{3})(\D|$)'⎕R'\1,\2\3'⍣≡report
+          output←Report 1
           :Return
       :EndIf
+      data+←⊃⊃⊢⍤//⎕VFI⍕bytes
       reqs+←1
       :If ⎕AI[3]>reportInterval+lastReport
-          ⍞←report
+          ⍞←Report 0
           lastReport←3⊃⎕AI
       :EndIf
      
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
-      :Trap debug↓0   ⍝ Inform client of unexpected error
+      :Trap debug↓0 ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
           here←⊃1 ⎕NPARTS 4⊃5179⌶⍕⎕THIS ⍝ look where TAE was loaded from
           ⍝:EndIf
