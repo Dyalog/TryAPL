@@ -62,7 +62,7 @@
       :EndIf
     ∇
     ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
@@ -73,9 +73,14 @@
           {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
       :EndIf
      
+      profile←0
       :If ']reportnow'≡⎕C input~' ',⎕D
           output←Report 1
           :Return
+      :ElseIf ⊃']profilethis'⍷input~' '
+          ⎕PROFILE'clear'
+          ⎕PROFILE'start'
+          profile←1
       :EndIf
       data+←⊃⊃⊢⍤//⎕VFI⍕bytes
       reqs+←1
@@ -157,6 +162,8 @@
                   display←1 ⋄ continue←1
               :Case ']defs'
                   output,←↓0 0 ns ##.TAEL.defs'',' '(≠⊆⊢)input
+              :Case ']profilethis'
+                  ⍝ taken care of above
               :Case ')clear'
                   output,←⊂'clear ws' ⋄ ns←⎕NS ⍬
               :Case ')erase'
@@ -211,6 +218,7 @@
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
                   :EndIf
+     
                   :Trap 1
                       res←⎕FMT res
                       :If 1000<⊃⌽⍴res
@@ -220,6 +228,12 @@
                           res←(85↑res)⍪'·'⍪'·'⍪'·'⍪(¯5↑res)
                       :EndIf
                       output,←↓⎕FMT res
+                      :If profile
+                          ⎕PROFILE'stop'
+                          output,←↓⍕ns.data←⎕PROFILE'data'
+                          output,←⊂'      ⍴data←⎕PROFILE''data'''
+                          output,←⊂⍕⍴ns.data
+                      :EndIf
                   :Else
                       ⎕EX'res'
                       ⎕EX'output'
