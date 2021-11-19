@@ -52,7 +52,7 @@
      
       :If extended
           mm←' QuickWA' 'kB WSused' 'kB Comps' ' GCs' ' PocksFree/Used' '/' ' Sediment' 'kB AllocNow/Hi/Max' '/' '/' 'kB ⎕WAs'
-          mm{⍺,'=',⍕⍵}¨←KB¨@1 2 5 6 7 8 9 10⊢2000⌶0 1 2 3 9 10 12 13 14 16 19
+          mm{⍺,'=',⍕⍵}¨←KB¨@1 2 7 8 9 10⊢2000⌶0 1 2 3 9 10 12 13 14 16 19
           output,←' '(≠⊆⊢)'/='⎕R'/'∊mm
           output←'(\d)([+→])'⎕R'\1 \2 '⊢' 0+(\d)'⎕R' \1'⊢'(\d)/(\d)'⎕R'\1 / \2'↓⍕↑'='(≠⊆⊢)¨output
           output,⍨←'"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
