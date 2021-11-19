@@ -31,7 +31,7 @@
     :EndNamespace
 
     ∇ output←Report extended;mm;Time;KB;Delta
-      :If 0=⎕NC'initWS'
+      :If 0=⎕NC'initWA'
           initWA←2000⌶0
           initSize←#.(+/⎕SIZE ⎕NL-⍳9)
           initTAE←⎕SIZE'#.TAE'
