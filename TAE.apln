@@ -163,7 +163,7 @@
               :Case ']defs'
                   output,←↓0 0 ns ##.TAEL.defs'',' '(≠⊆⊢)input
               :Case ']profilethis'
-                  ⍝ taken care of above
+                  continue←1
               :Case ')clear'
                   output,←⊂'clear ws' ⋄ ns←⎕NS ⍬
               :Case ')erase'
