@@ -61,12 +61,12 @@
           lastReport←3⊃⎕AI
       :EndIf
     ∇
-    ∇ (ns85 bytes hash85 output)←{stay}Exec(ns85 bytes hash85 input)
+    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input)
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
-      :If 900⌶0 ⍝ monadic
+      :If req≢1 ⍝ bootstrap 
       :AndIf 0≠debug
       :AndIf pressKeys
           pressKeys←0
@@ -120,7 +120,7 @@
               #.Server.HTMLInterface←here
               #.Server.Start
           :EndIf
-          ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS #.Server.HTMLInterface),'/lib/tryapl.js'
+          ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS req.Server.HTMLInterface),'/lib/tryapl.js'
           :If 0=⎕NC'debug'
               :If 0≠⎕NC'#.jarvis'
                   debug←#.jarvis.Debug
