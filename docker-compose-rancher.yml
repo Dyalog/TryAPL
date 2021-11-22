@@ -10,6 +10,6 @@ services:
       io.rancher.container.pull_image: always
     environment:
       TAE_SALT: ${TAE_SALT}
-      SERVE:*:4502
+      RIDE_INIT: SERVE:*:4502
     ports:
     - 4502:4566/tcp
