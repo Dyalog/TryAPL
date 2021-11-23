@@ -11,3 +11,5 @@ services:
     environment:
       TAE_SALT: ${TAE_SALT}
       RIDE_INIT: SERVE:*:4502
+#    ports:
+#    - 4566:4502/tcp
