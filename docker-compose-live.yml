@@ -13,5 +13,5 @@ services:
       TAE_SALT: ${TAE_SALT}
       RIDE_INIT: SERVE:*:4502
       APLCORENAME: /storage/aplcore_182U64_*
-#    ports:
-#    - 4566:4502/tcp
+    ports:
+    - 4566:4502/tcp
