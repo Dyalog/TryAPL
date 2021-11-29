@@ -97,15 +97,16 @@ node ('Docker') {
     }
     
     stage('Deploying with Rancher') {
-        sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./docker-compose-rancher.yml")
         withCredentials([
-                    string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT'),
-        usernamePassword(credentialsId: '02543ae7-7ed9-4448-ba20-6b367d302ecc', passwordVariable: 'SECRETKEY', usernameVariable: 'ACCESSKEY')]) {
+                string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT'),
+                usernamePassword(credentialsId: '02543ae7-7ed9-4448-ba20-6b367d302ecc', passwordVariable: 'SECRETKEY', usernameVariable: 'ACCESSKEY')]) {
             if (env.BRANCH_NAME.contains('staging')) {
-                sh '/usr/local/bin/rancher-compose -f ./docker-compose-rancher.yml --access-key $ACCESSKEY --secret-key $SECRETKEY --url http://rancher.dyalog.com:8080/v2-beta/projects/1a5/stacks/1st41 -p TryAPL-Staging up --force-upgrade --confirm-upgrade --pull -d'
+                sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./docker-compose-staging.yml")
+                sh '/usr/local/bin/rancher-compose -f ./docker-compose-staging.yml --access-key $ACCESSKEY --secret-key $SECRETKEY --url http://rancher.dyalog.com:8080/v2-beta/projects/1a5/stacks/1st41 -p TryAPL-Staging up --force-upgrade --confirm-upgrade --pull -d'
             }
             if (env.BRANCH_NAME.contains('live')) {
-                sh '/usr/local/bin/rancher-compose -f ./docker-compose-rancher.yml --access-key $ACCESSKEY --secret-key $SECRETKEY --url http://rancher.dyalog.com:8080/v2-beta/projects/1a5/stacks/1st9 -p TryAPL up --force-upgrade --confirm-upgrade --pull -d'
+                sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./docker-compose-live.yml")
+                sh '/usr/local/bin/rancher-compose -f ./docker-compose-live.yml --access-key $ACCESSKEY --secret-key $SECRETKEY --url http://rancher.dyalog.com:8080/v2-beta/projects/1a5/stacks/1st9 -p TryAPL up --force-upgrade --confirm-upgrade --pull -d'
             }
         }
     }

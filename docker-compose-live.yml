@@ -1,15 +1,17 @@
 version: '2'
 services:
   web:
-    image: dyalog/jarvis
+    image: dyalog/jarvis:18.2-beta
     stdin_open: true
     volumes:
     - /DockerVolumes/ftp/tryaplweb/{{BRANCH}}:/app
+    - /DockerVolumes/ftp/tryaplweb/storage/{{BRANCH}}:/storage
     tty: true
     labels:
       io.rancher.container.pull_image: always
     environment:
       TAE_SALT: ${TAE_SALT}
       RIDE_INIT: SERVE:*:4502
+      APLCORENAME: /storage/aplcore_182U64_*
 #    ports:
 #    - 4566:4502/tcp
