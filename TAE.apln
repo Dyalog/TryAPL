@@ -30,7 +30,7 @@
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
-    ∇ output←Report extended;mm;Time;KB;Delta
+    ∇ output←Report extended;mm;Time;Delta
       :If 0=⎕NC'initWA'
           initWA←2000⌶0
           initSize←#.(+/⎕SIZE ⎕NL-⍳9)
@@ -38,7 +38,6 @@
           initTAEL←⎕SIZE'#.TAEL'
       :EndIf
       Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
-      KB←('(^|[^0-9])0\.0*(\d)' '\.'⎕R'\1\2' ',')1↓3⍕1000(⊣÷⍨⌊⍤÷⍨)⊢
       Delta←∊'+' '→' 'kB',⍨∘KB¨⊣,-⍨,⊢
       output←,⊂'Up=',Time 3⊃⎕AI
       output,←⊂'Data=',(KB data),'kb'
@@ -61,12 +60,12 @@
           lastReport←3⊃⎕AI
       :EndIf
     ∇
-    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input)
+    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input);qwa
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
       ⍝ bytes: length of uncompressed serialised ns
-      :If req≢1 ⍝ bootstrap 
+      :If req≢1 ⍝ bootstrap
       :AndIf 0≠debug
       :AndIf pressKeys
           pressKeys←0
@@ -253,9 +252,15 @@
           output,←(⊂'SERIALISE WS FAIL: Workspace was rolled back')
         ⍝  (ns85 bytes hash85)←Save rollback
       :EndTrap
+     
+      :If 100000000>qwa←2000⌶0
+          ⍞←'WARNING: QuickWA=',(KB qwa),' kB',⎕UCS 13
+      :EndIf
     ∇
 
     :Section utils
+    KB←('(^|[^0-9])0\.0*(\d)' '\.'⎕R'\1\2' ',')1↓3⍕1000(⊣÷⍨⌊⍤÷⍨)⊢
+
     NoOp←{}
 
       From←{
