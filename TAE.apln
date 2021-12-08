@@ -304,7 +304,8 @@
     ∇
 
       FmtOR←{
-          ⍵ ##.TAEL.dft 0 ⍝ derv
+          11::⍵ ##.TAEL.dft 0 ⍝ derv
+          ⎕FMT ⍵⊣(⎕NS⍬).⎕FX ⍵
       }
 
       Erase←{
