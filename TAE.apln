@@ -304,8 +304,12 @@
     ∇
 
       FmtOR←{
-          11::⍵ ##.TAEL.dft 0 ⍝ derv
-          ⎕FMT ⍵⊣(⎕NS⍬).⎕FX ⍵
+          11::⍵ ##.TAEL.dft 0   ⍝ derv
+          _←(⎕NS ⍬).⎕FX ⍵       ⍝ err if derv
+          mat←⎕FMT ⍵            ⍝ has [nn]s and ∇s
+          mat↓⍨←0,¯1+'∇'⍳⍨⊣⌿mat ⍝ strip [nn]s
+          ~⊃'∇ résult'⍷map:map  ⍝ tradfn
+          ↑7↓¨@1↓0 2↓map        ⍝ dfn
       }
 
       Erase←{
