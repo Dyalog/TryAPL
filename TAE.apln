@@ -314,7 +314,8 @@
 
       Erase←{
           names←' '(≠⊆⊢)⍵
-          (⍺.⎕EX names)⊢(0∊ns.⎕NC names)⍴⊂'not found',' ',¨names
+          missing←0=ns.⎕NC names
+          (⍺.⎕EX names)⊢(∨/missing)⍴⊂'not found',∊' ',¨missing/names
       }
     ∇ path←GetDll ver;os;bit;file;content;pathfile;ghfile;tn
       os←ver∩⍥⎕C ⎕A
