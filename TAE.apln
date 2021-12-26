@@ -264,8 +264,8 @@
     NoOp←{}
 
       From←{
-          resp←##.TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
-          2 ##.TAEL.⎕FIX r.Data(~⍤∊⊆⊣)⎕UCS 13 10
+          resp←##. TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
+          2 ##.TAEL.⎕FIX resp.Data(~⍤∊⊆⊣)⎕UCS 13 10
       }
       Save←{
           ns←1 Ser ⍵
