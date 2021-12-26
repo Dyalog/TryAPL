@@ -1,4 +1,4 @@
-﻿:Namespace TAE
+:Namespace TAE
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
     Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
@@ -264,7 +264,8 @@
     NoOp←{}
 
       From←{
-          _←##.TAEL.HttpCommand.Fix(gh,⍵,⍺,'.dyalog')##.TAEL
+          resp←##. TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
+          2 ##.TAEL.⎕FIX resp.Data(~⍤∊⊆⊣)⎕UCS 13 10
       }
       Save←{
           ns←1 Ser ⍵
