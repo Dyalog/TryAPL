@@ -100,7 +100,7 @@
      
               'dft' 'disp' 'display' 'wrap' 'defs'##.TAEL.⎕CY'dfns'
               ##.TAEL.(⎕FX'⍠⍤\['⎕R'⍠⍤⍥'⎕NR'defs') ⍝ add ⍥
-              ##.TAEL.(⎕FX'·'⎕R' '⎕NR'dft') ⍝ don't touch!
+              ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+⍵⍳''{''}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
               dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
               ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
               ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/Utils.dyalog').⎕NR'repObj'
@@ -119,7 +119,11 @@
               #.Server.HTMLInterface←here
               #.Server.Start
           :EndIf
-          ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS req.Server.HTMLInterface),'/lib/tryapl.js'
+          :If 9=⎕NC'req'
+              ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS req.Server.HTMLInterface),'/lib/tryapl.js'
+          :Else
+              ver←'local'
+          :EndIf
           :If 0=⎕NC'debug'
               :If 0≠⎕NC'#.jarvis'
                   debug←#.jarvis.Debug
@@ -264,8 +268,8 @@
     NoOp←{}
 
       From←{
-          resp←##. TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
-          2 ##.TAEL.⎕FIX resp.Data(~⍤∊⊆⊣)⎕UCS 13 10
+          resp←##.TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
+          2 ##.TAEL.⎕FIX resp.Data(~⍤∊⊆⊣)⎕UCS 13 10 65279 ⍝ CR NL BOM
       }
       Save←{
           ns←1 Ser ⍵
