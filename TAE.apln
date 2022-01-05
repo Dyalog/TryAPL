@@ -100,7 +100,7 @@
      
               'dft' 'disp' 'display' 'wrap' 'defs'##.TAEL.⎕CY'dfns'
               ##.TAEL.(⎕FX'⍠⍤\['⎕R'⍠⍤⍥'⎕NR'defs') ⍝ add ⍥
-              ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+⍵⍳''{''}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
+              ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+''{''⍳⍨,⍵}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
               dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
               ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
               ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/Utils.dyalog').⎕NR'repObj'
