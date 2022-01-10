@@ -93,7 +93,7 @@
 						<td>See?</td>
 					</tr>
 				</table>
-				<h2>What can APL do for you?</h2>
+				<h2 id="what">What can APL do for you?</h2>
 				Are you a Problem Solver (a domain or subject matter expert with problems to solve) or a Programmer (someone who translates those solutions into a computer-executable format)? Problem Solvers benefit from APL's ability to concisely express advanced concepts without getting bogged down with a lot of computerese syntax. Programmers benefit from APL's productivity and brevity. Shorter programs means quicker development time and less code to maintain and debug.
 				<br><br>
 				In either case, concepts that take several lines of code in other languages can often be reduced to a few characters in APL. You'll quickly find that APL's symbols are organized in a logical, mnemonic manner that makes it easy to express advanced concepts clearly and concisely, and makes it easy to learn too. Move to the <a href="#" onclick="learnTab.click()">Learn</a> tab and get started or visit the <a href="#" onclick="primerTab.click()">Primer</a> tab to explore on your own!!
@@ -110,12 +110,12 @@
 						<span id="nbError" class="errorSpan"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" width="12" height="12"><path fill="currentColor" d="M569.517 440.013C587.975 472.007 564.806 512 527.94 512H48.054c-36.937 0-59.999-40.055-41.577-71.987L246.423 23.985c18.467-32.009 64.72-31.951 83.154 0l239.94 416.028zM288 354c-25.405 0-46 20.595-46 46s20.595 46 46 46 46-20.595 46-46-20.595-46-46-46zm-43.673-165.346l7.418 136c.347 6.364 5.609 11.346 11.982 11.346h48.546c6.373 0 11.635-4.982 11.982-11.346l7.418-136c.375-6.874-5.098-12.654-11.982-12.654h-63.383c-6.884 0-12.356 5.78-11.981 12.654z" class=""></path></svg></i>&nbsp;Load failed!</span>
 					</div>
 					<div id="lessonList" onclick="nbFill(event.target)">		  
-						<h3>Basics</h3>
+						<h3 id="basics">Basics</h3>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Using the TryAPL Tutorials.ipynb">Using the TryAPL Tutorials</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/APL Expressions.ipynb">APL Expressions</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Arrays.ipynb">Arrays</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Functions.ipynb">Functions</a>
-						<h3>Closer Looks</h3>
+						<h3 id="closer">Closer Looks</h3>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Arithmetic Functions.ipynb">Arithmetic Functions: <code>+</code> <code>-</code> <code>×</code> <code>÷</code> <code>*</code> <code>⍟</code> <code>⌈</code> <code>⌊</code> <code>|</code></a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Grading and Sorting.ipynb">Grading and Sorting: <code>⍋</code> <code>⍒</code></a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Modifying Rank and Depth.ipynb">Modifying Rank and Depth: <code>↑</code> <code>↓</code> <code>⊂</code> <code>⊃</code></a>
@@ -129,7 +129,7 @@
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v16.ipynb">New in version 16.0</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/New in v17.ipynb">New in version 17.0</a>
 						--->
-						<h3>Further Explorations</h3>
+						<h3 id="further">Further Explorations</h3>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Conway's Game of Life.ipynb">Conway's Game of Life</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Lookup Without Replacement.ipynb">Lookup Without Replacement</a>
 						<a data-url="https://github.com/Dyalog/dyalog-jupyter-notebooks/blob/master/Sudoku Solver.ipynb">Sudoku Solver</a>
@@ -140,7 +140,7 @@
 		<br/></div>
 		<div class="content" id="primer">
 			<h1>Cheat Sheet</h1>
-			<h2>Primitives</h2>
+			<h2 id="primitives">Primitives</h2>
 			Use the language bar above to insert glyphs. Click on a glyph below to print basic usage and how to type it. Enter <code class="apl">]help </code> followed by a symbol for details; for example <code class="apl">]help +</code>.
 			<div id="primerGlyphs" onclick="glyphHelp(event.target.value)">
 				<h4>Mathematics</h4>
@@ -244,7 +244,7 @@
 				</ol>-->
 			</div>
 
-			<h2>Additional features</h2>
+			<h2 id="additional">Additional features</h2>
 The below subset of Dyalog's functionality is also supported in TryAPL. Enter for example <code class="apl">]help ]display</code> for details:
 <h3>Listing</h3>
 <!--<code class="apl">]Defs  </code>&emsp;display single-line function and operator definitions<br />-->
@@ -311,14 +311,14 @@ session.value=session.value.slice(0,session.selectionStart)
 		<br/></div>
 		<div class="content" id="links">
 			<h1>Useful links</h1>
-			<h2>APL Wiki</h2>
+			<h2 id="wiki">APL Wiki</h2>
 			Most information is available on the <a target="_blank" href="https://aplwiki.com">APL Wiki</a>, for example:
 			<ul>
 				<li><a target="_blank" href="https://aplwiki.com/wiki/Learning_resources">Learning resources</a></li>
 				<li><a target="_blank" href="https://aplwiki.com/wiki/Running_APL">How to run APL</a></li>
 				<li><a target="_blank" href="https://aplwiki.com/wiki/Documentation_suites">Online documentation</a></li>
 			</ul>
-			<h2>Getting help</h2>
+			<h2 id="gethelp">Getting help</h2>
 			Having trouble? You might find your question already answered on: 
 			<ul>
 				<li><a target="_blank" href="https://aplcart.info/">APLcart</a></li>
@@ -335,7 +335,7 @@ session.value=session.value.slice(0,session.selectionStart)
 					<a href="https://www.linkedin.com/company/dyalog-ltd-" target="_blank">LinkedIn</a>
 			</ul>
 
-			<h2>Recommended videos</h2>
+			<h2 id="videos">Recommended videos</h2>
 			There are lots of good APL videos out there, including these hand-picked masterpieces:
 			<ul>
 				<li><a target="_blank" href="https://www.youtube.com/watch?v=a9xAKttWgP4">Conway's Game of Life in APL</a></li>
@@ -370,7 +370,7 @@ session.value=session.value.slice(0,session.selectionStart)
 						<kbd class="l">ù</kbd>, and then the key according to the en-US keyboard diagram <a href="https://dfns.dyalog.com/n_keyboards.htm" class="kbd" target="_blank">here</a>.</li>
 		</ul>    
 		More information on entering APL symbols using your keyboard can be found on <a target="_blank" href="https://aplwiki.com/wiki/Typing_glyphs">the APL Wiki</a>.     
-			<h2>Shortcut keys</h2>
+			<h2 id="keys">Shortcut keys</h2>
 			<table class="creditsTable">
 				<tr><td><kbd>Enter</kbd></td><td>Execute current line</td></tr>
 				<tr><td><kbd>Shift</kbd>+<kbd>Escape</kbd></td><td>Clear current line</td></tr>
@@ -398,8 +398,8 @@ session.value=session.value.slice(0,session.selectionStart)
 				<tr><td>Access-key <kbd class="l">p</kbd></td><td><u>P</u>revious step</td></tr>
 				<tr><td>Access-key <kbd class="l">n</kbd></td><td><u>N</u>ext step</td></tr>
 			</table>
-			<h2>About TryAPL</h2>
-			<p><b>TryAPL</b> is a JavaScript front-end sending requests to a state-less <a target="_blank" href="https://github.com/Dyalog/Jarvis/">Jarvis</a> back-end which uses <a target="_blank" href="https://github.com/abrudz/dyalog-safe-exec">Safe Execute</a> for <a target="_blank" href="https://dyalog.com">Dyalog APL</a> under <b>Docker</b>. Dyalog APL runs under <b>Linux</b>, including <b>Raspberry Pi</b>, <b>Microsoft Windows</b>, and <b>macOS</b>.</p>
+			<h2 id="about">About TryAPL</h2>
+			<p><b>TryAPL</b> free open <a href="https://github.com/Dyalog/TryAPL/tree/master/assets">source</source> software and consists of a JavaScript front-end sending requests to a state-less <a target="_blank" href="https://github.com/Dyalog/Jarvis/">Jarvis</a> back-end which uses <a target="_blank" href="https://github.com/abrudz/dyalog-safe-exec">Safe Execute</a> for <a target="_blank" href="https://dyalog.com">Dyalog APL</a> under <b>Docker</b>. Dyalog APL runs under <b>Linux</b>, including <b>Raspberry Pi</b>, <b>Microsoft Windows</b>, and <b>macOS</b>.</p>
 			<p>The back-end is available for direct use too. This means that anyone can write a new front-end or otherwise avail themselves of the computation engine. The simple API is <a target="_blank" href="https://apl.wiki/TryAPL#API">described on APL Wiki</a>.</p>
 			<p class="ipynbinfo">The <a href="#" onclick="learnTab.click()">Learn</a> tab's lessons are Jupyter Notebooks documents and can be <a target="_blank" href="https://github.com/Dyalog/dyalog-jupyter-kernel/wiki">used locally</a>. We welcome submissions of notebooks for inclusion in TryAPL, as well as reports of anomalies, suggestions, criticisms, and comments to <a href="mailto:tryapl@dyalog.com">tryapl@dyalog.com</a>.</p>
 			<h2 id="limitations">Limitations</h2>
@@ -408,7 +408,7 @@ session.value=session.value.slice(0,session.selectionStart)
 				<p>To protect the server, expressions are checked against a whitelist while <code>⍎</code>, <code>⍕</code>, <code>⍣</code>, <code>⌶</code>, and <code>⎕FX</code> have limited functionality. All supported quad-names, system and user commands are listed on the <a href="#" onclick="primerTab.click()"><b>Primer</b></a> tab.</p>
 				<p><b>Space and time limits</b> can be queried with <code class="apl">]State</code>. Exceeding the maximum time for execution of an expression causes the execution to be cancelled and the workspace will remain as it was before the expression was entered.</p>
 			<p>When using TryAPL, your workspace is automatically saved to local storage in your web browser. <strong>No data is stored on our servers</strong>; it is only sent across the network when you execute code. Manage your data from the <a href="#" onclick="fileTab.click()">File</a> tab.</p>
-			<h2>Credits</h2>
+			<h2 id="credits">Credits</h2>
 			<table class="creditsTable">
 				<tr><td>Implementation</td><td>Brian Becker</td></tr>
 				<tr><td>Design</td><td>Brian McCormick</td></tr>
