@@ -87,7 +87,10 @@
           ⍞←Report 0
           lastReport←3⊃⎕AI
       :EndIf
-     
+      
+      ⍝ Log sanitised input
+      ⍞←'''[^'']+''|⍝.+'⎕R{'\p{Lu}' '\pL'⎕R{⎕C⍣⍵.PatternNum⊢⎕A[?26]}⍵.Match}input,⎕UCS 13
+
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
       :Trap debug↓0 ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
