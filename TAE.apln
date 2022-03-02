@@ -300,6 +300,7 @@
       }
 
       Format←{
+          5∨.<(|⍤≡,≢⍤⍴)⍵:⎕SIGNAL⊂('EN'7)('Message' 'Array output is currently limited to rank and depth 5')
           0::⍵
           (1≡⍥,≡,⍴)⍵:FmtOR ⍵
           a←LF2NL ⍵
