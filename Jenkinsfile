@@ -99,6 +99,7 @@ if (env.BRANCH_NAME.contains('swarm')) {
             withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
                 unstash 'tryapl-compose'
                 sh 'mv docker-compose-live.yml service.yml'
+                sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./service.yml")
                 r = swarm 'TryAPL'
                 echo r
             }
