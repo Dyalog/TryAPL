@@ -1,3 +1,5 @@
+@Library('swarm-deploy') _
+
 def DockerApp
 def DockerJarvis
 def Testfile = '/tmp/tryapl-CI.log'
@@ -49,28 +51,7 @@ node ('Docker') {
     }
     
     stage ('Publish Try APL') {
-        if (Branch == 'live') {
-            ftpPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false, publishers: [[
-                configName: 'TryAPLFTP',
-                transfers: [[
-                    asciiMode: false,
-                    cleanRemote: false,
-                    excludes: '',
-                    flatten: false,
-                    makeEmptyDirs: false,
-                    noDefaultExcludes: false,
-                    patternSeparator: '[, ]+',
-                    remoteDirectory: "/${Branch}/",
-                    remoteDirectorySDF: false,
-                    removePrefix: '',
-                    sourceFiles: '**/*'
-                ]],
-                usePromotionTimestamp: false,
-                useWorkspaceInPromotion: false,
-                verbose: true
-            ]]
-        }
-        else if (Branch == 'staging') {
+        if ((Branch == 'live') || (Branch == 'Staging') || (Branch == 'swarm')) {
             ftpPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false, publishers: [[
                 configName: 'TryAPLFTP',
                 transfers: [[
@@ -94,6 +75,7 @@ node ('Docker') {
             sh ("mkdir -p /DockerVolumes/ftp/tryapl/${Branch}/")
             sh ("cp -R * /DockerVolumes/ftp/tryapl/${Branch}/")
         }
+        stash includes: 'docker-compose-live.yml,docker-compose-staging.yml', name: 'tryapl-compose'
     }
     
     stage('Deploying with Rancher') {
@@ -107,6 +89,18 @@ node ('Docker') {
             if (env.BRANCH_NAME.contains('live')) {
                 sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./docker-compose-live.yml")
                 sh '/usr/local/bin/rancher-compose -f ./docker-compose-live.yml --access-key $ACCESSKEY --secret-key $SECRETKEY --url http://rancher.dyalog.com:8080/v2-beta/projects/1a5/stacks/1st9 -p TryAPL up --force-upgrade --confirm-upgrade --pull -d'
+            }
+        }
+    }
+}
+if (env.BRANCH_NAME.contains('swarm')) {
+    node (label: 'swarm && gosport') {
+        stage('Deploying with Docker Swarm') {
+            withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
+                unstash tryapl-compose
+                sh 'mv docker-compose-live.yml service.yml'
+                r = swarm 'TryAPL'
+                echo r
             }
         }
     }
