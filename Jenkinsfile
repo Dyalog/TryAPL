@@ -97,7 +97,7 @@ if (env.BRANCH_NAME.contains('swarm')) {
     node (label: 'swarm && gosport') {
         stage('Deploying with Docker Swarm') {
             withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
-                unstash tryapl-compose
+                unstash 'tryapl-compose'
                 sh 'mv docker-compose-live.yml service.yml'
                 r = swarm 'TryAPL'
                 echo r
