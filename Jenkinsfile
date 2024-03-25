@@ -93,11 +93,28 @@ node ('Docker') {
         }
     }
 }
+if (env.BRANCH_NAME.contains('staging')) {
+    node (label: 'swarm && gosport') {
+        stage('Deploying with Docker Swarm') {
+            withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
+                unstash 'tryapl-compose'
+                sh 'env'
+                // The swarm scripts expect service.yml
+                sh 'mv docker-compose-staging.yml service.yml'
+                sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./service.yml")
+                r = swarm 'TryAPL'
+                echo r
+            }
+        }
+    }
+}
 if (env.BRANCH_NAME.contains('swarm')) {
     node (label: 'swarm && gosport') {
         stage('Deploying with Docker Swarm') {
             withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
                 unstash 'tryapl-compose'
+                sh 'env'
+                // The swarm scripts expect service.yml
                 sh 'mv docker-compose-live.yml service.yml'
                 sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./service.yml")
                 r = swarm 'TryAPL'
