@@ -18,7 +18,7 @@ node ('Docker') {
     }
     stage ('Update Jarvis') {
         withDockerRegistry(credentialsId: '0435817a-5f0f-47e1-9dcc-800d85e5c335') {
-            DockerJarvis=docker.image('dyalog/jarvis:latest')
+            DockerJarvis=docker.image('dyalog/jarvis:1.17.0')
             DockerJarvis.pull()
         }
     }
