@@ -1,7 +1,7 @@
-version: '2'
+version: '3.6'
 services:
   web:
-    image: dyalog/jarvis:latest
+    image: dyalog/jarvis:v1.17.0
     stdin_open: true
     volumes:
     - /DockerVolumes/ftp/tryaplweb/{{BRANCH}}:/app
@@ -13,5 +13,26 @@ services:
       TAE_SALT: ${TAE_SALT}
       RIDE_INIT: SERVE:*:4502
       APLCORENAME: /storage/aplcore_182U64_*
-#    ports:
-#    - 4566:4502/tcp
+    networks:
+    - traefik-public
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        - traefik.http.routers.tryapl-http.rule=Host(`staging.tryapl.org`)
+        - traefik.http.routers.tryapl-http.entrypoints=http
+        - traefik.http.routers.tryapl-http.middlewares=https-redirect
+        - traefik.http.routers.tryapl-https.rule=Host(`staging.tryapl.org`)
+        - traefik.http.routers.tryapl-https.entrypoints=https
+        - traefik.http.routers.tryapl-https.tls=true
+        - traefik.http.routers.tryapl-https.tls.certresolver=le
+        - traefik.http.services.tryapl.loadbalancer.server.port=8080
+
+networks:
+  traefik-public:
+    external: true
