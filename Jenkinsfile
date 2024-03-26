@@ -51,7 +51,7 @@ node ('Docker') {
     }
     
     stage ('Publish Try APL') {
-        if ((Branch == 'live') || (Branch == 'Staging') || (Branch == 'swarm')) {
+        if ((Branch == 'live') || (Branch == 'staging') || (Branch == 'swarm')) {
             ftpPublisher alwaysPublishFromMaster: false, continueOnError: false, failOnError: false, publishers: [[
                 configName: 'TryAPLFTP',
                 transfers: [[
@@ -86,7 +86,7 @@ if (env.BRANCH_NAME.contains('staging') || env.BRANCH_NAME.contains('live')) {
                 // The swarm scripts expect service.yml
                 sh "mv docker-compose-${Branch}.yml service.yml"
                 sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./service.yml")
-                r = swarm 'TryAPL'
+                r = swarm "TryAPL-${Branch}"
                 echo r
             }
         }
