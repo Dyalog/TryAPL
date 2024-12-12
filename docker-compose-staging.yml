@@ -24,14 +24,14 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.tryapl-http.rule=Host(`staging.tryapl.org`)
-        - traefik.http.routers.tryapl-http.entrypoints=http
-        - traefik.http.routers.tryapl-http.middlewares=https-redirect
-        - traefik.http.routers.tryapl-https.rule=Host(`staging.tryapl.org`)
-        - traefik.http.routers.tryapl-https.entrypoints=https
-        - traefik.http.routers.tryapl-https.tls=true
-        - traefik.http.routers.tryapl-https.tls.certresolver=le
-        - traefik.http.services.tryapl.loadbalancer.server.port=8080
+        - traefik.http.routers.tryapl-staging-http.rule=Host(`staging.tryapl.org`)
+        - traefik.http.routers.tryapl-staging-http.entrypoints=http
+        - traefik.http.routers.tryapl-staging-http.middlewares=https-redirect
+        - traefik.http.routers.tryapl-staging-https.rule=Host(`staging.tryapl.org`)
+        - traefik.http.routers.tryapl-staging-https.entrypoints=https
+        - traefik.http.routers.tryapl-staging-https.tls=true
+        - traefik.http.routers.tryapl-staging-https.tls.certresolver=le
+        - traefik.http.services.tryapl-staging.loadbalancer.server.port=8080
 
 networks:
   traefik-public:
