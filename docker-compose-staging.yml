@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   web:
-    image: dyalog/jarvis
+    image: dyalog/jarvis:v1.17.0
     stdin_open: true
     volumes:
     - /DockerVolumes/ftp/tryaplweb/{{BRANCH}}:/app
