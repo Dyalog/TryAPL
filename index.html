@@ -25,7 +25,7 @@
          	   })();
         	</script>
        <!-- End Matomo Code -->
-		
+		<script src="lib/tooltips.js"></script>
 	</head>
 	<body>
 		<i accesskey="w" onclick="html.className=this.accessKey;localStorage.setItem('darkMode','w');"></i>
@@ -488,5 +488,16 @@ session.value=session.value.slice(0,session.selectionStart)
 		</div>
 	</div>
 	<script src="lib/tiolb.js"></script>
+	<script>
+		document.querySelectorAll('.ngn_lb b').forEach(function(glyph) {
+			glyph.addEventListener('click', function(event) {
+				if (event.ctrlKey) {
+					var symbol = event.target.textContent;
+					var url = 'https://help.dyalog.com/latest/#Language/Primitive%20Functions%20and%20Operators/' + encodeURIComponent(symbol) + '.htm';
+					window.open(url, '_blank');
+				}
+			});
+		});
+	</script>
 	</body>
 </html>
