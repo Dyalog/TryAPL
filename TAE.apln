@@ -64,7 +64,7 @@
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
-      ⍝ bytes: length of uncompressed serialised ns
+      ⍝ bytes: length of uncompressed serialised ns      
       :If req≢1 ⍝ bootstrap
       :AndIf 0≠debug
       :AndIf pressKeys
@@ -87,10 +87,10 @@
           ⍞←Report 0
           lastReport←3⊃⎕AI
       :EndIf
-      
+     
       ⍝ Log sanitised input
       ⍞←'''[^'']+''|⍝.+'⎕R{'\p{Lu}' '\pL'⎕R{⎕C⍣⍵.PatternNum⊢⎕A[?26]}⍵.Match}input,⎕UCS 13
-
+     
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
       :Trap debug↓0 ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
@@ -106,7 +106,7 @@
               ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+''{''⍳⍨,⍵}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
               dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
               ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
-              ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/Utils.dyalog').⎕NR'repObj'
+              ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
               'Safe2'From dse
               ⍝'Crypt'From dcl
@@ -300,7 +300,7 @@
       }
 
       Format←{
-          5∨.<(|⍤≡,≢⍤⍴)⍵:⎕SIGNAL⊂('EN'7)('Message' 'Array output is currently limited to rank and depth 5')
+          5∨.<(|⍤≡,≢⍤⍴)⍵:⎕SIGNAL⊂('EN' 7)('Message' 'Array output is currently limited to rank and depth 5')
           0::⍵
           (1≡⍥,≡,⍴)⍵:FmtOR ⍵
           a←LF2NL ⍵
