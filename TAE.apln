@@ -1,8 +1,7 @@
-﻿:Namespace TAE
+:Namespace TAE
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
-    Run←{##.(ns bytes hash output)←Exec '' 0 '' ''}
-
+    Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
     :Section defs
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ debug←0
 
@@ -17,20 +16,83 @@
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
+    reportInterval←60×60×1000 ⍝ ms
+    objs←'TAE' 'Server' 'Conga' 'Jarvis' 'DRC' 'HttpCommand'
+    :EndSection
+    :Section State
+    lastReport←-reportInterval
+    reqs←0
+    data←0
+    pressKeys←1
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
         (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
     :EndNamespace
 
-    ∇ (ns85 bytes hash85 output)←Exec(ns85 bytes hash85 input)
-      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here
+    ∇ output←Report extended;mm;Time;Delta
+      :If 0=⎕NC'initWA'
+          initWA←2000⌶0
+          initSize←#.(+/⎕SIZE ⎕NL-⍳9)
+          initTAE←⎕SIZE'#.TAE'
+          initTAEL←⎕SIZE'#.TAEL'
+      :EndIf
+      Time←{,∊'[1-9]\d*[dhms]+'⎕S'&'⍠'ML' 2∊(⍕¨0 24 60 60 1000⊤⍵),¨'d' 'h' 'm' 's' 'ms'}
+      Delta←∊'+' '→' 'kB',⍨∘KB¨⊣,-⍨,⊢
+      output←,⊂'Up=',Time 3⊃⎕AI
+      output,←⊂'Data=',(KB data),'kb'
+      output,←⊂'CPU=',Time 2⊃⎕AI
+      output,←⊂'&=',⍕≢⎕TNUMS
+      output,←⊂'Reqs=',⍕reqs
+      output,←⊂'QuickWA=',initWA Delta 2000⌶0
+      output,←⊂'+/⎕SIZE=',initSize Delta #.(+/⎕SIZE ⎕NL-⍳9)
+      output,←⊂'TAE=',initTAE Delta #.⎕SIZE'TAE'
+      output,←⊂'TAEL=',initTAEL Delta #.⎕SIZE'TAEL'
+     
+      :If extended
+          mm←' QuickWA' 'kB WSused' 'kB Comps' ' GCs' ' PocksFree/Used' '/' ' Sediment' 'kB AllocNow/Hi/Max' '/' '/' 'kB ⎕WAs'
+          mm{⍺,'=',⍕⍵}¨←KB¨@1 2 7 8 9 10⊢2000⌶0 1 2 3 9 10 12 13 14 16 19
+          output,←' '(≠⊆⊢)'/='⎕R'/'∊mm
+          output←'(\d)([+→])'⎕R'\1 \2 '⊢' 0+(\d)'⎕R' \1'⊢'(\d)/(\d)'⎕R'\1 / \2'↓⍕↑'='(≠⊆⊢)¨output
+          output,⍨←'"───" %ISO%"Z ───"'(1200⌶)1 ⎕DT'Z'
+      :Else
+          output←'STATUS:',(∊' ',¨output),⎕UCS 13
+          lastReport←3⊃⎕AI
+      :EndIf
+    ∇
+    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input);qwa
+      ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
-      ⍝ bytes: length of uncompressed serialised ns
-     ⍝ #.⎕TRAP←0 'C' '⍞←⎕JSON⍠''Compact'' 0⍠''Dialect'' ''JSON5''⊢⎕DMX ⋄ ⎕OFF'
+      ⍝ bytes: length of uncompressed serialised ns      
+      :If req≢1 ⍝ bootstrap
+      :AndIf 0≠debug
+      :AndIf pressKeys
+          pressKeys←0
+          {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
+      :EndIf
+     
+      profile←0
+      :If ']reportnow'≡⎕C input~' ',⎕D
+          output←Report 1
+          :Return
+      :ElseIf ⊃']profilethis'⍷input~' '
+          ⎕PROFILE'clear'
+          ⎕PROFILE'start'
+          profile←1
+      :EndIf
+      data+←⊃⊃⊢⍤//⎕VFI⍕bytes
+      reqs+←1
+      :If ⎕AI[3]>reportInterval+lastReport
+          ⍞←Report 0
+          lastReport←3⊃⎕AI
+      :EndIf
+     
+      ⍝ Log sanitised input
+      ⍞←'''[^'']+''|⍝.+'⎕R{'\p{Lu}' '\pL'⎕R{⎕C⍣⍵.PatternNum⊢⎕A[?26]}⍵.Match}input,⎕UCS 13
+     
       output←'' ⍝ initialize in case trapped error happens before output is assigned below
-      :Trap debug↓0   ⍝ Inform client of unexpected error
+      :Trap debug↓0 ⍝ Inform client of unexpected error
           ⍝:If 0∊⍴here←⊃⎕NPARTS ⎕SE.Dyalog.Utils.Config'LOAD' ⍝ if LOAD parameter not supplied...
           here←⊃1 ⎕NPARTS 4⊃5179⌶⍕⎕THIS ⍝ look where TAE was loaded from
           ⍝:EndIf
@@ -41,8 +103,10 @@
      
               'dft' 'disp' 'display' 'wrap' 'defs'##.TAEL.⎕CY'dfns'
               ##.TAEL.(⎕FX'⍠⍤\['⎕R'⍠⍤⍥'⎕NR'defs') ⍝ add ⍥
-              ##.TAEL.(⎕FX'·'⎕R' '⎕NR'dft') ⍝ don't touch!
-              ##.TAEL.⎕FIX'file://',(⊢2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/Library/Conga/HttpCommand.dyalog'
+              ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+''{''⍳⍨,⍵}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
+              dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
+              ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
+              ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
               'Safe2'From dse
               ⍝'Crypt'From dcl
@@ -58,7 +122,13 @@
               #.Server.HTMLInterface←here
               #.Server.Start
           :EndIf
-          ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS #.Server.HTMLInterface),'/lib/tryapl.js'
+          :If 9=⎕NC'req'
+              ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS req.Server.HTMLInterface),'/lib/tryapl.js'
+              server_version←∊' '∘,¨2↑req.Server.Version
+          :Else
+              ver←'local'
+              server_version←{×⎕NC'#.Server':∊' '∘,¨2↑#.Server.Version ⋄ ' unknown'}⍬
+          :EndIf
           :If 0=⎕NC'debug'
               :If 0≠⎕NC'#.jarvis'
                   debug←#.jarvis.Debug
@@ -94,12 +164,14 @@
               :Case ']state'
                   output,←State ns
               :Case ']dinput'
-                  input←'⎕FX ',⎕SE.Dyalog.Utils.repObj 1↓input(≠⊆⊣)⎕UCS 10
+                  input←'{11::''defn error'' ⋄ ⎕FX ',(##.TAEL.repObj input(≠⊆⊣)⎕UCS 10),'}⍬'
                   continue←1
               :Case ']display'
                   display←1 ⋄ continue←1
               :Case ']defs'
                   output,←↓0 0 ns ##.TAEL.defs'',' '(≠⊆⊢)input
+              :Case ']profilethis'
+                  continue←1
               :Case ')clear'
                   output,←⊂'clear ws' ⋄ ns←⎕NS ⍬
               :Case ')erase'
@@ -154,6 +226,7 @@
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
                   :EndIf
+     
                   :Trap 1
                       res←⎕FMT res
                       :If 1000<⊃⌽⍴res
@@ -163,6 +236,12 @@
                           res←(85↑res)⍪'·'⍪'·'⍪'·'⍪(¯5↑res)
                       :EndIf
                       output,←↓⎕FMT res
+                      :If profile
+                          ⎕PROFILE'stop'
+                          output,←↓⍕ns.data←⎕PROFILE'data'
+                          output,←⊂'      ⍴data←⎕PROFILE''data'''
+                          output,←⊂⍕⍴ns.data
+                      :EndIf
                   :Else
                       ⎕EX'res'
                       ⎕EX'output'
@@ -182,13 +261,20 @@
           output,←(⊂'SERIALISE WS FAIL: Workspace was rolled back')
         ⍝  (ns85 bytes hash85)←Save rollback
       :EndTrap
+     
+      :If 100000000>qwa←2000⌶0
+          ⍞←'WARNING: QuickWA=',(KB qwa),' kB',⎕UCS 13
+      :EndIf
     ∇
 
     :Section utils
+    KB←('(^|[^0-9])0\.0*(\d)' '\.'⎕R'\1\2' ',')1↓3⍕1000(⊣÷⍨⌊⍤÷⍨)⊢
+
     NoOp←{}
 
       From←{
-          _←##.TAEL.HttpCommand.Fix(gh,⍵,⍺,'.dyalog')##.TAEL
+          resp←##.TAEL.HttpCommand.Get gh,⍵,⍺,'.dyalog'
+          2 ##.TAEL.⎕FIX resp.Data(~⍤∊⊆⊣)⎕UCS 13 10 65279 ⍝ CR NL BOM
       }
       Save←{
           ns←1 Ser ⍵
@@ -208,7 +294,7 @@
           output←0⍴⊂''
           output,←⊂'Operating system is ',∊{'Windows'≡7↑⊃# ⎕WG'APLVersion':⎕CMD'ver' ⋄ 'PRETTY_NAME="(.*)"'⎕S'\1'⎕SH'cat /etc/*release'}⍬
           output,←⊂'APL interpreter is ',(2↑'32',⍨⎕D∩⍨⊃# ⎕WG'APLVersion'),'-bit Dyalog ',(2⊃# ⎕WG'APLVersion'),(' Unicode'/⍨80=⎕DR'')
-          output,←⊂'Server is',{×⎕NC'#.Server':∊' ',¨2↑#.Server.Version ⋄ ' unknown'}⍬
+          output,←⊂'Server is',server_version
           output,←⊂'TryAPL version is ',ver
           output,←⊂'Expressions may run for up to ',(⍕timeout),' seconds'
           output,←⊂'Workspace used: ',(⍕⌊0.5+1000÷⍨⎕SIZE'⍵'),' / ',(⍕maxws÷1000),' kilobytes'
@@ -216,6 +302,7 @@
       }
 
       Format←{
+          5∨.<(|⍤≡,≢⍤⍴)⍵:⎕SIGNAL⊂('EN' 7)('Message' 'Array output is currently limited to rank and depth 5')
           0::⍵
           (1≡⍥,≡,⍴)⍵:FmtOR ⍵
           a←LF2NL ⍵
@@ -228,12 +315,18 @@
     ∇
 
       FmtOR←{
-          ⍵ ##.TAEL.dft 0 ⍝ derv
+          11::⍵ ##.TAEL.dft 0   ⍝ derv
+          _←(⎕NS ⍬).⎕FX ⍵       ⍝ err if derv
+          mat←⎕FMT ⍵            ⍝ has [nn]s and ∇s
+          mat↓⍨←0,¯1+'∇'⍳⍨⊣⌿mat ⍝ strip [nn]s
+          ~⊃'∇ résult'⍷mat:mat  ⍝ tradfn
+          ↑7↓¨@1↓0 2↓mat        ⍝ dfn
       }
 
       Erase←{
           names←' '(≠⊆⊢)⍵
-          (⍺.⎕EX names)⊢(0∊ns.⎕NC names)⍴⊂'not found',' ',¨names
+          missing←0=ns.⎕NC names
+          (⍺.⎕EX names)⊢(∨/missing)⍴⊂'not found',∊' ',¨missing/names
       }
     ∇ path←GetDll ver;os;bit;file;content;pathfile;ghfile;tn
       os←ver∩⍥⎕C ⎕A
