@@ -454,8 +454,11 @@ session.value=session.value.slice(0,session.selectionStart)
 				<li>Use <code class="apl">⎕NL-⍳9</code> to see which names are used in your workspace.
 				<li>Use <code class="apl">)CLEAR</code> to remove all names from your workspace.
 				<li>Use <code class="apl">)ERASE name</code> to remove <code class="apl">name</code> from your workspace.
+				<li>Use <code class="apl">)SAVE</code> or the download button below to save your workspace as a <b>.tryapl</b> file.
+				<li>Use <code class="apl">)LOAD</code> or the upload button below to load a <b>.tryapl</b> file.
 				</ul>
 				<p>If the URL contains the <strong>clear</strong> parameter (tryapl.org?clear) then you will have a clear workspace and changes will not be saved. Removing the <strong>clear</strong> parameter will restore the data, if it exists and the checkbox above is ticked.</p>
+				<p>Share a TryAPL link that loads a workspace with tryapl.org?ws=[URL] or a notebook with tryapl.org?nb=[URL].</p>
 				<p>You can download your workspace as a <b>.tryapl</b> file: <button id="dlWS" onclick="downloadWS()" accesskey="d">Download&hellip;</button>
 				</p>
 				<p>You can upload a <b>.tryapl</b> workspace from your computer or load it from a URL: <button onclick="upload.click()">Upload&hellip;</button></p>
