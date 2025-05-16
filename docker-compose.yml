@@ -1,8 +1,10 @@
 version: '2'
 services:
   web:
-    image: dyalog/jarvis
+    image: dyalog/jarvis:dyalog-v20.0-techpreview
     stdin_open: true
     volumes:
     - ${PWD}:/app
     tty: true
+    ports:
+    - 8080:8080
