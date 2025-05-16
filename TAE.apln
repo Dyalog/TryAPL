@@ -290,9 +290,18 @@
           (⎕NS ⍬)(⊂'CORRUPT WS: Workspace was reset')
       }
 
+      ReadFiles←{
+        ⍝ ⍵: Simple Char Vec :: File path with optional wildcard * (multiple char) or ? (single char)
+        ⍝ ←: Simple Char Vec :: Contents of all files with paths matching pattern ⍵
+          (type name)←1 0 ⎕NINFO ⎕OPT'Wildcard' 1⊢⍵
+          files←name⌿⍨type=2
+          0∊⍴files:⎕SIGNAL⊂('EN' 22)('EM' 'FILE NAME ERROR')('Message' 'No files found matching that pattern.')
+          ⊃⍪⌿⊃∘⎕NGET¨name⌿⍨type=2
+      }
+
       State←{
           output←0⍴⊂''
-          output,←⊂'Operating system is ',∊{'Windows'≡7↑⊃# ⎕WG'APLVersion':⎕CMD'ver' ⋄ 'PRETTY_NAME="(.*)"'⎕S'\1'⎕SH'cat /etc/*release'}⍬
+          output,←⊂'Operating system is ',∊{'Windows'≡7↑⊃# ⎕WG'APLVersion':⎕CMD'ver' ⋄ 'PRETTY_NAME="(.*)"'⎕S'\1'ReadFiles'/etc/*release'}⍬
           output,←⊂'APL interpreter is ',(2↑'32',⍨⎕D∩⍨⊃# ⎕WG'APLVersion'),'-bit Dyalog ',(2⊃# ⎕WG'APLVersion'),(' Unicode'/⍨80=⎕DR'')
           output,←⊂'Server is',server_version
           output,←⊂'TryAPL version is ',ver
