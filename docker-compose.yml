@@ -1,7 +1,7 @@
 version: '2'
 services:
   web:
-    image: dyalog/jarvis:dyalog-v20.0-techpreview
+    image: dyalog/jarvis:dyalog-v20.0
     stdin_open: true
     volumes:
     - ${PWD}:/app
