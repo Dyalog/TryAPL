@@ -1,7 +1,10 @@
-:Namespace TAE
+:Namespace TryAPL
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
-    Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
+      Run←{
+          pressKeys⊢←0   ⍝ When starting manually (e.g. LOAD=TryAPL.apln), do not put ⎕OFF onto keyboard buffer
+          ##.(ns bytes hash output)←1 Exec'' 0 '' ''
+      }
     :Section defs
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ debug←0
 
@@ -23,7 +26,7 @@
     lastReport←-reportInterval
     reqs←0
     data←0
-    pressKeys←1
+    pressKeys←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
@@ -60,17 +63,19 @@
           lastReport←3⊃⎕AI
       :EndIf
     ∇
-    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input);qwa
+    ∇ (ns85 bytes hash85 output)←req Exec(ns85 bytes hash85 input);qwa
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
-      ⍝ bytes: length of uncompressed serialised ns      
-      :If req≢1 ⍝ bootstrap
-      :AndIf 0≠debug
-      :AndIf pressKeys
-          pressKeys←0
-          {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
-      :EndIf
+      ⍝ bytes: length of uncompressed serialised ns
+      :Section setInputBuffer
+          :If req≢1 ⍝ 1=bootstrap, otherwise request
+          :AndIf 0=debug
+          :AndIf pressKeys
+              pressKeys←0
+              {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
+          :EndIf
+      :EndSection
      
       profile←0
       :If ']reportnow'≡⎕C input~' ',⎕D
@@ -108,7 +113,7 @@
               ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
               ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
-              'Safe2'From dse
+              'Safe3'From dse
               ⍝'Crypt'From dcl
               ⍝path←GetDll⊃# ⎕WG'APLVersion'
               ##.TAEL.⎕FIX'file://',here,'/lib/DCL/Crypt.dyalog'
@@ -117,7 +122,7 @@
           :If ⍱/×#.⎕NC'Jarvis' 'TAEL.Jarvis'
               'Jarvis'From jarvis
               #.Server←⎕NEW ##.TAEL.Jarvis
-              #.Server.CodeLocation←'#.TAE'
+              #.Server.CodeLocation←'#.TryAPL'
               #.Server.IncludeFns←'Exec'
               #.Server.HTMLInterface←here
               #.Server.Start
@@ -142,7 +147,6 @@
               (1+⊃⎕LC)⎕STOP⊃⎕SI
           :EndIf
           (ns output)←Load ns85 bytes hash85
-          rollback←⎕NS ns
           input←3↓2⊃⎕NR ⎕FX'Dummy'('⋄',input) ⍝ normalise spacing
           display←0 ⋄ continue←1
           cmd←'^ *([])]\w*)'⎕S'\l1'⍠'Mode' 'D'⊢input
@@ -173,7 +177,7 @@
               :Case ']profilethis'
                   continue←1
               :Case ')clear'
-                  output,←⊂'clear ws' ⋄ ns←⎕NS ⍬
+                  output,←⊂'clear ws' ⋄ ns←newSandbox
               :Case ')erase'
                   output,←ns Erase input
               :Case ')vars'
@@ -188,7 +192,7 @@
           :EndIf
      
           :If continue
-              exprs←##.TAEL.Safe2.splitondiamonds input
+              exprs←##.TAEL.Safe3.splitondiamonds input
               Error←{
                   i←|⍵
                   caret←⊂(⍺⍺⊃dmx.Vendor'   ^')↓⍨⍺⍺×1=i
@@ -206,7 +210,7 @@
                   :EndIf
                   :Trap debug↓0 0
                       backup←⎕NS ns
-                      res←display Format ns.{_←⍵}ns timeout ##.TAEL.Safe2.Exec expr
+                      res←display Format ns.{_←⍵}ns timeout ##.TAEL.Safe3.Exec expr
                   :CaseList 1 201 ⍝ ws full
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
@@ -283,11 +287,16 @@
           ns85(≢ns)hash85
       }
 
+    ∇ sb←newSandbox
+      ⎕EX'Sandbox'
+      sb←⍎'Sandbox'⎕NS''
+    ∇
+
       Load←{(ns85 bytes hash85)←⍵
-          0∧.=⍴ns85:(⎕NS ⍬)(0⍴⊂'')
-          0::(⎕NS ⍬)(⊂'CORRUPT WS: Workspace was reset')
-          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85)(0⍴⊂'')
-          (⎕NS ⍬)(⊂'CORRUPT WS: Workspace was reset')
+          0∧.=⍴ns85:(newSandbox ⋄ 0⍴⊂'')
+          0::(newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
+          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85 ⋄ 0⍴⊂'')
+          (newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
       }
 
       ReadFiles←{
