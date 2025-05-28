@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 TESTFILE=$1
 DOCKER_IP=$2
