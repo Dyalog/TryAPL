@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e 
+set -ex
 
 DOCKER_IP=$1
 
