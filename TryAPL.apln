@@ -16,6 +16,7 @@
 
     gh←'https://raw.githubusercontent.com/'
     dse←'abrudz/dyalog-safe-exec/master/'
+    dseApi←'https://api.github.com/repos/abrudz/dyalog-safe-exec/commits/master'
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
@@ -114,6 +115,7 @@
               ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
               'Safe3'From dse
+              dseDate←(##.TAEL.HttpCommand.GetJSON dseApi).Data.commit.committer.date
               ⍝'Crypt'From dcl
               ⍝path←GetDll⊃# ⎕WG'APLVersion'
               ##.TAEL.⎕FIX'file://',here,'/lib/DCL/Crypt.dyalog'
@@ -315,6 +317,7 @@
           output,←⊂'APL interpreter is ',(2↑'32',⍨⎕D∩⍨⊃# ⎕WG'APLVersion'),'-bit Dyalog ',(2⊃# ⎕WG'APLVersion'),(' Unicode'/⍨80=⎕DR'')
           output,←⊂'Server is',server_version
           output,←⊂'TryAPL version is ',ver
+          output,←⊂'Safe3 date: ',dseDate
           output,←⊂'Expressions may run for up to ',(⍕timeout),' seconds'
           output,←⊂'Workspace used: ',(⍕⌊0.5+1000÷⍨⎕SIZE'⍵'),' / ',(⍕maxws÷1000),' kilobytes'
           output
