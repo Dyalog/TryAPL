@@ -210,7 +210,7 @@
                   :EndIf
                   :Trap debug↓0 0
                       backup←⎕NS ns
-                      res←display Format ns.{_←⍵}ns timeout ##.TAEL.Safe3.Exec expr
+                      res←display Format ns timeout ##.TAEL.Safe3.Exec expr
                   :CaseList 1 201 ⍝ ws full
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
