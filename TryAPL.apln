@@ -2,7 +2,7 @@
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
       Run←{
-          pressKeys⊢←0   ⍝ When starting manually (e.g. LOAD=TryAPL.apln), do not put ⎕OFF onto keyboard buffer
+          nq⊢←0   ⍝ When starting manually (e.g. LOAD=TryAPL.apln), do not put ⎕OFF onto keyboard buffer
           ##.(ns bytes hash output)←1 Exec'' 0 '' ''
       }
     :Section defs
@@ -26,7 +26,7 @@
     lastReport←-reportInterval
     reqs←0
     data←0
-    pressKeys←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
+    nq←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
@@ -71,8 +71,8 @@
       :Section setInputBuffer
           :If req≢1 ⍝ 1=bootstrap, otherwise request
           :AndIf 0=debug
-          :AndIf pressKeys
-              pressKeys←0
+          :AndIf nq
+              nq←0
               {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
           :EndIf
       :EndSection
