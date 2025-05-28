@@ -208,9 +208,10 @@
                   :If ∧/input∊⎕UCS 32 9 ⍝ space tab
                       :Continue
                   :EndIf
-                  :Trap debug↓0 0   ⍝ Handle custom TryAPL limits
+                  :Trap debug↓0 0 6   ⍝ Handle custom TryAPL limits
                       backup←⎕NS ns
-                      res←display Format ns timeout ##.TAEL.Safe3.Exec expr
+                      res←ns timeout ##.TAEL.Safe3.Exec expr
+                      (⎕THIS ##.TAEL).⎕PP←ns.⎕PP ⋄ res←display Format res ⋄ (⎕THIS ##.TAEL).⎕PP←10
                   :CaseList 1 201 ⍝ ws full
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
@@ -295,7 +296,7 @@
       Load←{(ns85 bytes hash85)←⍵
           0∧.=⍴ns85:(newSandbox ⋄ 0⍴⊂'')
           0::(newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')                    ⍝ ↓ not using array notation due to [22239]
-          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85 )( 0⍴⊂'')
+          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85)(0⍴⊂'')
           (newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
       }
 
