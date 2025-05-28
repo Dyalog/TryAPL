@@ -2,7 +2,7 @@
 
 def DockerApp
 def DockerJarvis
-def Testfile = '/tmp/tryapl-CI.log'
+def Testfile = "${WORKSPACE}/tryapl-CI.log"
 def Branch = env.BRANCH_NAME.toLowerCase()
 def storageBranch
 
