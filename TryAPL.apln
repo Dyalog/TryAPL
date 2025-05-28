@@ -294,8 +294,8 @@
 
       Load←{(ns85 bytes hash85)←⍵
           0∧.=⍴ns85:(newSandbox ⋄ 0⍴⊂'')
-          0::(newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
-          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85 ⋄ 0⍴⊂'')
+          0::(newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')                    ⍝ ↓ not using array notation due to [22239]
+          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85 )( 0⍴⊂'')
           (newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
       }
 
