@@ -258,7 +258,7 @@
           ⍞←⎕JSON⍠'Compact' 0⍠'Dialect' 'JSON5'⊢⎕DMX
           output,←(⊂'EXECUTION FAIL: Workspace was preserved')
       :EndTrap
-      :Trap 0
+      :Trap debug↓0
           (ns85 bytes hash85)←Save ns
       :Else
           ⍞←⎕JSON⍠'Compact' 0⍠'Dialect' 'JSON5'⊢⎕DMX
