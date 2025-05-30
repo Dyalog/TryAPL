@@ -1,7 +1,10 @@
-:Namespace TAE
+:Namespace TryAPL
 ⍝ TryAPLExecutor
 ⍝ Creates TAEL sibling ns for 3rd-party libraries
-    Run←{##.(ns bytes hash output)←1 Exec '' 0 '' ''}
+      Run←{
+          nq⊢←0   ⍝ When starting manually (e.g. LOAD=TryAPL.apln), do not put ⎕OFF onto keyboard buffer
+          ##.(ns bytes hash output)←1 Exec'' 0 '' ''
+      }
     :Section defs
     ⎕IO←1 ⋄ ⎕ML←1 ⋄ debug←0
 
@@ -13,6 +16,7 @@
 
     gh←'https://raw.githubusercontent.com/'
     dse←'abrudz/dyalog-safe-exec/master/'
+    dseApi←'https://api.github.com/repos/abrudz/dyalog-safe-exec/commits/master'
     dcl←'Dyalog/DCL/master/' ⍝ Dyalog Cryptographic Library
     jarvis←'Dyalog/Jarvis/master/Source/'
 
@@ -23,7 +27,7 @@
     lastReport←-reportInterval
     reqs←0
     data←0
-    pressKeys←1
+    nq←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
     :EndSection
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
@@ -60,17 +64,19 @@
           lastReport←3⊃⎕AI
       :EndIf
     ∇
-    ∇ (ns85 bytes hash85 output)←{req}Exec(ns85 bytes hash85 input);qwa
+    ∇ (ns85 bytes hash85 output)←req Exec(ns85 bytes hash85 input);qwa
       ;Dummy;Error;exprs;i;expr;res;display;backup;continue;cmd;path;dmx;code;name;ns;hash;event;rollback;here;dyalog;profile
       ⍝ ns: ref or ascii85 zlib serialised ns
       ⍝ To initialise: (ns bytes hash output)←Exec('' 0 '' '')
-      ⍝ bytes: length of uncompressed serialised ns      
-      :If req≢1 ⍝ bootstrap
-      :AndIf 0≠debug
-      :AndIf pressKeys
-          pressKeys←0
-          {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
-      :EndIf
+      ⍝ bytes: length of uncompressed serialised ns
+      :Section setInputBuffer
+          :If req≢1 ⍝ 1=bootstrap, otherwise request
+          :AndIf 0=debug
+          :AndIf nq
+              nq←0
+              {⎕NQ ⎕SE'KeyPress'⍵}¨(⊂'ER'),'⎕OFF 75',⊂'ER'
+          :EndIf
+      :EndSection
      
       profile←0
       :If ']reportnow'≡⎕C input~' ',⎕D
@@ -108,7 +114,8 @@
               ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
               ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
-              'Safe2'From dse
+              'Safe3'From dse
+              dseDate←(##.TAEL.HttpCommand.GetJSON dseApi).Data.commit.committer.date
               ⍝'Crypt'From dcl
               ⍝path←GetDll⊃# ⎕WG'APLVersion'
               ##.TAEL.⎕FIX'file://',here,'/lib/DCL/Crypt.dyalog'
@@ -117,15 +124,17 @@
           :If ⍱/×#.⎕NC'Jarvis' 'TAEL.Jarvis'
               'Jarvis'From jarvis
               #.Server←⎕NEW ##.TAEL.Jarvis
-              #.Server.CodeLocation←'#.TAE'
+              #.Server.CodeLocation←'#.TryAPL'
               #.Server.IncludeFns←'Exec'
               #.Server.HTMLInterface←here
               #.Server.Start
           :EndIf
           :If 9=⎕NC'req'
               ver←⊃'var +tryaplversion *= *"(.+)"'⎕S'\1'⍠'ML' 1⊃⎕NGET(⊃⎕NPARTS req.Server.HTMLInterface),'/lib/tryapl.js'
+              server_version←∊' '∘,¨2↑req.Server.Version
           :Else
               ver←'local'
+              server_version←{×⎕NC'#.Server':∊' '∘,¨2↑#.Server.Version ⋄ ' unknown'}⍬
           :EndIf
           :If 0=⎕NC'debug'
               :If 0≠⎕NC'#.jarvis'
@@ -140,7 +149,6 @@
               (1+⊃⎕LC)⎕STOP⊃⎕SI
           :EndIf
           (ns output)←Load ns85 bytes hash85
-          rollback←⎕NS ns
           input←3↓2⊃⎕NR ⎕FX'Dummy'('⋄',input) ⍝ normalise spacing
           display←0 ⋄ continue←1
           cmd←'^ *([])]\w*)'⎕S'\l1'⍠'Mode' 'D'⊢input
@@ -171,7 +179,7 @@
               :Case ']profilethis'
                   continue←1
               :Case ')clear'
-                  output,←⊂'clear ws' ⋄ ns←⎕NS ⍬
+                  output,←⊂'clear ws' ⋄ ns←newSandbox
               :Case ')erase'
                   output,←ns Erase input
               :Case ')vars'
@@ -186,7 +194,7 @@
           :EndIf
      
           :If continue
-              exprs←##.TAEL.Safe2.splitondiamonds input
+              exprs←##.TAEL.Safe3.splitondiamonds input
               Error←{
                   i←|⍵
                   caret←⊂(⍺⍺⊃dmx.Vendor'   ^')↓⍨⍺⍺×1=i
@@ -202,9 +210,10 @@
                   :If ∧/input∊⎕UCS 32 9 ⍝ space tab
                       :Continue
                   :EndIf
-                  :Trap debug↓0 0
+                  :Trap debug↓0 0 6   ⍝ Handle custom TryAPL limits
                       backup←⎕NS ns
-                      res←display Format ns.{_←⍵}ns timeout ##.TAEL.Safe2.Exec expr
+                      res←ns timeout ##.TAEL.Safe3.Exec expr
+                      (⎕THIS ##.TAEL).⎕PP←ns.⎕PP ⋄ res←display Format res ⋄ (⎕THIS ##.TAEL).⎕PP←10
                   :CaseList 1 201 ⍝ ws full
                       dmx←⎕DMX ⋄ ns←backup
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
@@ -225,7 +234,7 @@
                       output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
                   :EndIf
      
-                  :Trap 1
+                  :Trap 1 ⍝ Output handling, truncation etc. might WS FULL
                       res←⎕FMT res
                       :If 1000<⊃⌽⍴res
                           res←((≢res)980↑res),' ','·','·','·',' ',((≢res)¯10↑res)
@@ -252,7 +261,7 @@
           ⍞←⎕JSON⍠'Compact' 0⍠'Dialect' 'JSON5'⊢⎕DMX
           output,←(⊂'EXECUTION FAIL: Workspace was preserved')
       :EndTrap
-      :Trap 0
+      :Trap debug↓0
           (ns85 bytes hash85)←Save ns
       :Else
           ⍞←⎕JSON⍠'Compact' 0⍠'Dialect' 'JSON5'⊢⎕DMX
@@ -281,19 +290,34 @@
           ns85(≢ns)hash85
       }
 
+    ∇ sb←newSandbox
+      ⎕EX'Sandbox'
+      sb←⍎'Sandbox'⎕NS''
+    ∇
+
       Load←{(ns85 bytes hash85)←⍵
-          0∧.=⍴ns85:(⎕NS ⍬)(0⍴⊂'')
-          0::(⎕NS ⍬)(⊂'CORRUPT WS: Workspace was reset')
-          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85)(0⍴⊂'')
-          (⎕NS ⍬)(⊂'CORRUPT WS: Workspace was reset')
+          0∧.=⍴ns85:(newSandbox ⋄ 0⍴⊂'')
+          0::(newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')                    ⍝ ↓ not using array notation due to [22239]
+          hash85≡To85 ##.TAEL.Crypt.(HASH_SHA256∘PKCS5.PBKDF1)ns85 salt iter hlen:(newSandbox ⎕NS 0 Ser ¯2 bytes Zip ¯128+256|128+From85 ns85)(0⍴⊂'')
+          (newSandbox ⋄ ⊂'CORRUPT WS: Workspace was reset')
+      }
+
+      ReadFiles←{
+        ⍝ ⍵: Simple Char Vec :: File path with optional wildcard * (multiple char) or ? (single char)
+        ⍝ ←: Simple Char Vec :: Contents of all files with paths matching pattern ⍵
+          (type name)←1 0 ⎕NINFO ⎕OPT'Wildcard' 1⊢⍵
+          files←name⌿⍨type=2
+          0∊⍴files:⎕SIGNAL⊂('EN' 22)('EM' 'FILE NAME ERROR')('Message' 'No files found matching that pattern.')
+          ⊃⍪⌿⊃∘⎕NGET¨name⌿⍨type=2
       }
 
       State←{
           output←0⍴⊂''
-          output,←⊂'Operating system is ',∊{'Windows'≡7↑⊃# ⎕WG'APLVersion':⎕CMD'ver' ⋄ 'PRETTY_NAME="(.*)"'⎕S'\1'⎕SH'cat /etc/*release'}⍬
+          output,←⊂'Operating system is ',∊{'Windows'≡7↑⊃# ⎕WG'APLVersion':⎕CMD'ver' ⋄ 'PRETTY_NAME="(.*)"'⎕S'\1'ReadFiles'/etc/*release'}⍬
           output,←⊂'APL interpreter is ',(2↑'32',⍨⎕D∩⍨⊃# ⎕WG'APLVersion'),'-bit Dyalog ',(2⊃# ⎕WG'APLVersion'),(' Unicode'/⍨80=⎕DR'')
-          output,←⊂'Server is',{×⎕NC'#.Server':∊' ',¨2↑#.Server.Version ⋄ ' unknown'}⍬
+          output,←⊂'Server is',server_version
           output,←⊂'TryAPL version is ',ver
+          output,←⊂'Safe3 date: ',dseDate
           output,←⊂'Expressions may run for up to ',(⍕timeout),' seconds'
           output,←⊂'Workspace used: ',(⍕⌊0.5+1000÷⍨⎕SIZE'⍵'),' / ',(⍕maxws÷1000),' kilobytes'
           output

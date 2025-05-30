@@ -1,10 +1,8 @@
 #!/bin/bash
 
-set -e 
-
 DOCKER_IP=$1
+TESTOUT=${WORKSPACE}/CI/tryapl-test.log
 
-TESTOUT=/tmp/tryapl-test.log
 rm -f ${TESTOUT}
 touch ${TESTOUT}
 

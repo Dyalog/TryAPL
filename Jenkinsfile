@@ -2,7 +2,7 @@
 
 def DockerApp
 def DockerJarvis
-def Testfile = '/tmp/tryapl-CI.log'
+def Testfile
 def Branch = env.BRANCH_NAME.toLowerCase()
 def storageBranch
 
@@ -18,7 +18,7 @@ node ('Docker') {
     }
     stage ('Update Jarvis') {
         withDockerRegistry(credentialsId: '0435817a-5f0f-47e1-9dcc-800d85e5c335') {
-            DockerJarvis=docker.image('dyalog/jarvis:v1.17.0')
+            DockerJarvis=docker.image('dyalog/jarvis:dyalog-v20.0')
             DockerJarvis.pull()
         }
     }
@@ -26,6 +26,7 @@ node ('Docker') {
     
     stage ('Test website') {
         DockerApp = DockerJarvis.run ("-it -v${WORKSPACE}:/app")
+        Testfile = "${WORKSPACE}/tryapl-CI.log"
         println(DockerApp.id)
         def DOCKER_IP = sh (
             script: "docker inspect ${DockerApp.id} | jq .[0].NetworkSettings.IPAddress | sed 's/\"//g'",
