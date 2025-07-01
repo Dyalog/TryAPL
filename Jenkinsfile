@@ -84,6 +84,7 @@ if (env.BRANCH_NAME.contains('staging') || env.BRANCH_NAME.contains('live')) {
         stage('Deploying with Docker Swarm') {
             withCredentials([string(credentialsId: '99fcd81b-01f3-40bd-9a90-3a9c85065f1e', variable: 'TAE_SALT')]) {
                 unstash 'tryapl-compose'
+		stopServices "TryAPL-${Branch}"
                 // The swarm scripts expect service.yml
                 sh "mv docker-compose-${Branch}.yml service.yml"
                 sh ("sed -i 's/{{BRANCH}}/${Branch}/g' ./service.yml")
