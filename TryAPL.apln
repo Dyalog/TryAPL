@@ -168,7 +168,7 @@
                   output,←⊂']Help [builtin] [-url]  ⍝ Browse and/or get link to information about a feature'
                   output,←⊂']State                  ⍝ Technical system and workspace information'
               :Case ']help'
-                  output,←⊆HelpUrl input
+                  output,←⊆GetHelp input
               :Case ']state'
                   output,←State ns
               :Case ']dinput'
@@ -388,24 +388,6 @@
           ⍵⊂⍛∊']',¨ucmds:HelpUcmd ⍵ ⍝ user commands
           b←⎕UCS 8
           b,'help',b,ucmdHelp.Open.HelpUrl ⍵
-      }
-      HelpUrl←{ ⍝ adapted from ucmd code for ]help
-          ucmds←'help' 'state' 'display' 'defs'
-          b←⎕UCS 8
-          Fmt←b,'help',b,' '⎕R'\%20' ⍝ protocol is \bMESSAGE\b
-          url←'https://help.dyalog.com/',1↓∊2↑'.'(,⊂⍨⊣=,)2⊃# ⎕WG'APLVersion'
-          0=≢⍵:Fmt url,'/index.htm'
-          (terms pages)←⎕CSV⍠2⍠'Separator'(⎕UCS 9)⊢'/SALT/spice/help.csv',⍨2 ⎕NQ #'GetEnvironment' 'DYALOG'
-          terms←,∘⎕UCS∘⍎¨@(∧/¨∊∘⎕D¨)terms ⍝ convert numbers to characters
-          term←⊂⎕C ⍵
-          term∊terms:Fmt url,'/Content',pages⊃⍨terms⍳term   ⍝ built-ins
-          (']'=⊃⍵)∨(ucmds∊⍨⊂⍵~']'):HelpUcmd ⍵ ⍝ user commands
-          ens←⍸~(⊃∘⌽¨⎕EM⍳1010)∊⎕D,' '
-          en←⊃⊃⌽⎕VFI⊃term
-          en∊ens:Fmt url,'/Content/Language/Errors/','.htm',⍨⎕EM en ⍝ error numbers
-          em←1 ⎕C term
-          em∊⎕EM ens:Fmt url,'/Content/Language/Errors/','.htm',⍨⊃em ⍝ error messages
-          Fmt url,'/#search-',⍵∩' .',⎕D,⎕A,⎕C ⎕A         ⍝ general search
       }
     ∇ h←HelpUcmd ucmd
       ucmd←']',ucmd~']'
