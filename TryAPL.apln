@@ -14,7 +14,7 @@
         Get←{2⎕NQ#'GetEnvironment'⍵}
         tae_salt←Get'TAE_SALT'      
         dyalog←Get'DYALOG'
-        salt←'SALT'Get⍛{×≢⍺:⍺ ⋄ ⍵}dyalog,'/salt'
+        salt←'SALT'Get⍛{×≢⍺:⍺ ⋄ ⍵}dyalog,'/SALT'
     :EndNamespace
 
     salt←env.tae_salt ⋄ iter←3 ⋄ hlen←64
