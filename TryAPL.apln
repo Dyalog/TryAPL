@@ -29,9 +29,11 @@
     data←0
     nq←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
     :EndSection
+    List←0 2⍴⍬ ⍝ fallback for Open.HelpUrl
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
-        (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
+        (⎕FIX(2 ⎕NQ #'GetEnvironment' 'SALT'),'/spice/',,∘'.dyalog')¨'Summary' 'open'
+        (display help)←¯1 0↓¨1(Summary Open).Help 'Display' 'Help'
     :EndNamespace
 
     ∇ output←Report extended;mm;Time;Delta
@@ -380,6 +382,12 @@
           nl←(⎕A,⎕C ⎕A)⍺.⎕NL-⍵
           ×≢nl:↓⎕FMT'-'⎕R' '⊢80 ##.TAEL.wrap∊(' ',⍨⊢,'-'⍴⍨8|∘-1+≢)¨nl
           0⍴⊂''
+      }
+      GetHelp←{
+          ucmds←'help' 'state' 'display' 'defs'
+          ⍵⊂⍛∊']',¨ucmds:HelpUcmd ⍵ ⍝ user commands
+          b←⎕UCS 8
+          b,'help',b,ucmdHelp.Open.HelpUrl ⍵
       }
       HelpUrl←{ ⍝ adapted from ucmd code for ]help
           ucmds←'help' 'state' 'display' 'defs'
