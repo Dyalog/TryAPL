@@ -10,7 +10,14 @@
 
     Tmp←739⌶ ⋄ Ser←220⌶ ⋄ Zip←219⌶ ⋄ comp←2 9 ⍝ zlib max
 
-    salt←2⎕NQ#'GetEnvironment' 'TAE_SALT' ⋄ iter←3 ⋄ hlen←64
+    :Namespace env
+        Get←{2⎕NQ#'GetEnvironment'⍵}
+        tae_salt←Get'TAE_SALT'      
+        dyalog←Get'DYALOG'
+        salt←'SALT'Get⍛{×≢⍺:⍺ ⋄ ⍵}dyalog,'/salt'
+    :EndNamespace
+
+    salt←env.tae_salt ⋄ iter←3 ⋄ hlen←64
 
     timeout←10 ⋄ maxws←512000 ⍝ user limits
 
@@ -32,7 +39,7 @@
     List←0 2⍴⍬ ⍝ fallback for Open.HelpUrl
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
-        (⎕FIX(2 ⎕NQ #'GetEnvironment' 'SALT'),'/spice/',,∘'.dyalog')¨'Summary' 'open'
+        (⎕FIX ##.env.salt,'/spice/',,∘'.dyalog')¨'Summary' 'open'
         (display help)←¯1 0↓¨1(Summary Open).Help 'Display' 'Help'
     :EndNamespace
 
@@ -113,8 +120,8 @@
               ##.TAEL.(⎕FX'⍠⍤\['⎕R'⍠⍤⍥'⎕NR'defs') ⍝ add ⍥
               ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+''{''⍳⍨,⍵}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
               dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
-              ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
-              ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
+              ##.TAEL.⎕FIX env.dyalog,'/Library/Conga/HttpCommand.dyalog'
+              ##.TAEL.⎕FX(0 ⎕FIX env.dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
               'Safe3'From dse
               dseDate←(##.TAEL.HttpCommand.GetJSON dseApi).Data.commit.committer.date
