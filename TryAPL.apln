@@ -10,7 +10,14 @@
 
     Tmp←739⌶ ⋄ Ser←220⌶ ⋄ Zip←219⌶ ⋄ comp←2 9 ⍝ zlib max
 
-    salt←2⎕NQ#'GetEnvironment' 'TAE_SALT' ⋄ iter←3 ⋄ hlen←64
+    :Namespace env
+        Get←{2⎕NQ#'GetEnvironment'⍵}
+        tae_salt←Get'TAE_SALT'
+        dyalog←Get'DYALOG'
+        salt←'SALT'Get⍛{×≢⍺:⍺ ⋄ ⍵}dyalog,'/SALT'
+    :EndNamespace
+
+    salt←env.tae_salt ⋄ iter←3 ⋄ hlen←64
 
     timeout←10 ⋄ maxws←512000 ⍝ user limits
 
@@ -29,9 +36,11 @@
     data←0
     nq←1   ⍝ Default, put ⎕OFF into input buffer. If APL reaches session, it quits. Additional security for deployment. See :Section setInputBuffer
     :EndSection
+    List←0 2⍴⍬ ⍝ fallback for Open.HelpUrl
     :Namespace ucmdHelp
         (⍎'⎕SE.SALTUtils'⎕NS⍬).OS←3↑⊃#⎕WG'APLVersion' ⍝ "mini-SALT"
-        (display help)←¯1 0↓¨1({0⎕FIX'file://',(2 ⎕NQ #'GetEnvironment' 'DYALOG'),'/SALT/spice/',⍵,'.dyalog'}¨'Summary' 'open').Help 'Display' 'Help'
+        (⎕FIX ##.env.salt,'/spice/',,∘'.dyalog')¨'Summary' 'open'
+        (display help)←¯1 0↓¨1(Summary Open).Help 'Display' 'Help'
     :EndNamespace
 
     ∇ output←Report extended;mm;Time;Delta
@@ -111,8 +120,8 @@
               ##.TAEL.(⎕FX'⍠⍤\['⎕R'⍠⍤⍥'⎕NR'defs') ⍝ add ⍥
               ##.TAEL.(⎕FX'·' '⍷⊃'⎕R' ' '⍷{⍵↑⍨1+''{''⍳⍨,⍵}⊃'⎕NR'dft') ⍝ don't touch spaces, fix bug
               dyalog←2 ⎕NQ #'GetEnvironment' 'DYALOG'
-              ##.TAEL.⎕FIX'file://',dyalog,'/Library/Conga/HttpCommand.dyalog'
-              ##.TAEL.⎕FX(0 ⎕FIX'file://',dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
+              ##.TAEL.⎕FIX env.dyalog,'/Library/Conga/HttpCommand.dyalog'
+              ##.TAEL.⎕FX(0 ⎕FIX env.dyalog,'/SALT/core/SALTUtils.dyalog').⎕NR'repObj'
      
               'Safe3'From dse
               dseDate←(##.TAEL.HttpCommand.GetJSON dseApi).Data.commit.committer.date
@@ -166,7 +175,7 @@
                   output,←⊂']Help [builtin] [-url]  ⍝ Browse and/or get link to information about a feature'
                   output,←⊂']State                  ⍝ Technical system and workspace information'
               :Case ']help'
-                  output,←⊆HelpUrl input
+                  output,←⊆GetHelp input
               :Case ']state'
                   output,←State ns
               :Case ']dinput'
@@ -196,10 +205,8 @@
           :If continue
               exprs←##.TAEL.Safe3.splitondiamonds input
               Error←{
-                  i←|⍵
-                  caret←⊂(⍺⍺⊃dmx.Vendor'   ^')↓⍨⍺⍺×1=i
-                  errAdjust←(1+2⌊i)×0>⍵
-                  ⍺('      ',1↓∊'⋄',¨⍵⍵)(errAdjust↓'      ',1↓∊(i⍴''),caret@i⊢' '⍨¨¨⍵⍵)
+                  '['=⊃⍺:⍵⊂⍛,1↓0 ⎕JSON ⍺
+                  ⊂⍵
               }
               event←⎕SE ⎕WG'Event'
               :If 0=debug
@@ -216,22 +223,22 @@
                       (⎕THIS ##.TAEL).⎕PP←ns.⎕PP ⋄ res←display Format res ⋄ (⎕THIS ##.TAEL).⎕PP←10
                   :CaseList 1 201 ⍝ ws full
                       dmx←⎕DMX ⋄ ns←backup
-                      output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
+                      output,←dmx.Vendor Error'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
                   :Case 6 ⍝ shy or no result: ignore
                       res←0 0⍴''
                   :Case 10 ⍝ timeout
                       dmx←⎕DMX ⋄ ns←backup
-                      output,←i(2 Error exprs)⍨'LIMIT ERROR: Expressions must finish within ',(⍕timeout),' seconds'↓⍨-1=timeout ⋄ :Leave
+                      output,←dmx.Vendor Error'LIMIT ERROR: Expressions must finish within ',(⍕timeout),' seconds'↓⍨-1=timeout ⋄ :Leave
                   :Case 11 ⍝ illegal
                       dmx←⎕DMX ⋄ ns←backup
-                      output,←dmx.(Message{⍵,⍺,⍨': '/⍨×≢⍺}EM)(2 Error exprs)-i ⋄ :Leave
+                      output,←dmx.Vendor Error dmx.(Message{⍵,⍺,⍨': '/⍨×≢⍺}EM) ⋄ :Leave
                   :Else ⍝ user error
                       dmx←⎕DMX ⋄ ns←backup
-                      output,←dmx.(Message{⍵,⍺,⍨': '/⍨×≢⍺}⎕EM 200|EN-200)(1 Error exprs)i ⋄ :Leave
+                      output,←dmx.Vendor Error dmx.(Message{⍵,⍺,⍨': '/⍨×≢⍺}⎕EM 200|EN-200) ⋄ :Leave
                   :EndTrap
                   :If maxws<⎕SIZE'ns'
                       dmx←⎕DMX ⋄ ns←backup
-                      output,←i(2 Error exprs)⍨'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
+                      output,←dmx.Vendor Error'WS FULL: Maximum workspace is ',(⍕maxws÷1000),' kilobytes' ⋄ :Leave
                   :EndIf
      
                   :Trap 1 ⍝ Output handling, truncation etc. might WS FULL
@@ -381,23 +388,11 @@
           ×≢nl:↓⎕FMT'-'⎕R' '⊢80 ##.TAEL.wrap∊(' ',⍨⊢,'-'⍴⍨8|∘-1+≢)¨nl
           0⍴⊂''
       }
-      HelpUrl←{ ⍝ adapted from ucmd code for ]help
+      GetHelp←{
           ucmds←'help' 'state' 'display' 'defs'
+          ⍵⊂⍛∊']',¨ucmds:HelpUcmd ⍵ ⍝ user commands
           b←⎕UCS 8
-          Fmt←b,'help',b,' '⎕R'\%20' ⍝ protocol is \bMESSAGE\b
-          url←'https://help.dyalog.com/',1↓∊2↑'.'(,⊂⍨⊣=,)2⊃# ⎕WG'APLVersion'
-          0=≢⍵:Fmt url,'/index.htm'
-          (terms pages)←⎕CSV⍠2⍠'Separator'(⎕UCS 9)⊢'/SALT/spice/help.csv',⍨2 ⎕NQ #'GetEnvironment' 'DYALOG'
-          terms←,∘⎕UCS∘⍎¨@(∧/¨∊∘⎕D¨)terms ⍝ convert numbers to characters
-          term←⊂⎕C ⍵
-          term∊terms:Fmt url,'/Content',pages⊃⍨terms⍳term   ⍝ built-ins
-          (']'=⊃⍵)∨(ucmds∊⍨⊂⍵~']'):HelpUcmd ⍵ ⍝ user commands
-          ens←⍸~(⊃∘⌽¨⎕EM⍳1010)∊⎕D,' '
-          en←⊃⊃⌽⎕VFI⊃term
-          en∊ens:Fmt url,'/Content/Language/Errors/','.htm',⍨⎕EM en ⍝ error numbers
-          em←1 ⎕C term
-          em∊⎕EM ens:Fmt url,'/Content/Language/Errors/','.htm',⍨⊃em ⍝ error messages
-          Fmt url,'/#search-',⍵∩' .',⎕D,⎕A,⎕C ⎕A         ⍝ general search
+          b,'help',b,ucmdHelp.Open.HelpUrl ⍵
       }
     ∇ h←HelpUcmd ucmd
       ucmd←']',ucmd~']'
