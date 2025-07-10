@@ -24,12 +24,6 @@
   src: local("Nunito"), url("assets/Nunito-BoldItalic.ttf");
 }
 
-/* Hide oneLineInput on mobile */
-@media only screen and (max-width: 600px) {
-	#oneLineInput {visibility: hidden;}
-	#oneLineSubmit {visibility: hidden;}
-}
-
 html {
   --main-col:   165, 76,206;
   --main-light: 186, 99,208;
