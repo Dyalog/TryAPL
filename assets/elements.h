@@ -1,4 +1,3 @@
-﻿/* Automatically generated from MadCap source using Dyalog APL */
 NAME("Left Arrow"),CHAR("←"),TIP(
                         _("Assignment")
                         _("")
@@ -1129,7 +1128,7 @@ NAME("Transpose"),CHAR("⍉"),TIP(
                         _("1 4")
                         _("2 5")
                         _("3 6")
-                        _("			")
+                        _("")
                         _("      1 1 ⍉ mat   ⍝ leading diagonal")
                         _("1 5")
                         _("")
@@ -1258,6 +1257,24 @@ NAME("Jot"),CHAR("∘"),TIP(
                         _("1.61803")
                         _("")
                         )
+#if HAS_UNICODE
+NAME("Jot Underbar"),CHAR("⍛"),TIP(
+                        _("Dyadic operator: Behind")
+                        _("")
+                        _("      -⍛, 4   ⍝ (  f⍛g y) ≡ (f y) g y")
+                        _("¯4 4")
+                        _("")
+                        _("      ⊂⍤⍋⍛⌷ 3 1 4 1 5 9 2 6  ⍝ Sort")
+                        _("1 1 2 3 4 5 6 9")
+                        _("")
+                        _("      3 -⍛, 4 ⍝ (x f⍛g y) ≡ (f x) g y")
+                        _("¯3 4")
+                        _("")
+                        _("      8 ⍳⍛∊ 1 2 3 5")
+                        _("1 1 1 0 1 0 0 0")
+                        _("")
+                        )
+#endif
 #if HAS_UNICODE
 NAME("Jot Diaeresis"),CHAR("⍤"),TIP(
                         _("Dyadic operator (f⍤g): Atop")
@@ -1470,13 +1487,23 @@ NAME("I-Beam"),CHAR("⌶"),TIP(
                         )
 #endif
 NAME("Hydrant"),CHAR("⍎"),TIP(
-                        _("Monadic function:  Execute")
+                        _("Monadic function:  Execute expression")
                         _("")
                         _("      ⍎ '1+1'")
                         _("2")
                         _("      V ← 1 2 3")
                         _("      ⍎ 'V'")
-                        _("1 2 3 ")
+                        _("1 2 3")
+                        _("")
+                        _("Dyadic function:  Execute expression in namespace")
+                        _("")
+                        _("     '#' ⍎ '⎕PP ⎕CT ⎕RL'")
+                        _("┌──┬─────┬────┐")
+                        _("│10│1E¯14│┌┬─┐│")
+                        _("│  │     │││1││")
+                        _("│  │     │└┴─┘│")
+                        _("└──┴─────┴────┘")
+                        _("")
                         _("")
                         )
 NAME("Thorn"),CHAR("⍕"),TIP(
@@ -1626,4 +1653,3 @@ NAME("Zilde"),CHAR("⍬"),TIP(
                         _("0")
                         _("")
                         )
-
