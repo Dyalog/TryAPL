@@ -24,10 +24,10 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.tryapl-live-http.rule=Host(`tryapl.gos.dyalog.com`,`tryapl.org`,`tryapl.org`,`www.tryapl.com`,`tryapl.com`)
+        - traefik.http.routers.tryapl-live-http.rule=Host(`tryapl.gos.dyalog.com`) || Host(`tryapl.org`) || Host(`tryapl.org`) || Host(`www.tryapl.com`) || Host(`tryapl.com`)
         - traefik.http.routers.tryapl-live-http.entrypoints=http
         - traefik.http.routers.tryapl-live-http.middlewares=https-redirect
-        - traefik.http.routers.tryapl-live-https.rule=Host(`tryapl.gos.dyalog.com`,`tryapl.org`,`tryapl.org`,`www.tryapl.com`,`tryapl.com`)
+        - traefik.http.routers.tryapl-live-https.rule=Host(`tryapl.gos.dyalog.com`) || Host(`tryapl.org`) || Host(`tryapl.org`) || Host(`www.tryapl.com`) || Host(`tryapl.com`)
         - traefik.http.routers.tryapl-live-https.entrypoints=https
         - traefik.http.routers.tryapl-live-https.tls=true
         - traefik.http.routers.tryapl-live-https.tls.certresolver=le
