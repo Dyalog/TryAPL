@@ -12,7 +12,7 @@ services:
     environment:
       TAE_SALT: ${TAE_SALT}
       RIDE_INIT: SERVE:*:4502
-      APLCORENAME: /storage/aplcore_182U64_*
+      APLCORENAME: /storage/aplcore_TryAPL_200U64_*
     networks:
     - traefik-public
     deploy:
